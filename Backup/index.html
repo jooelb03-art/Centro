@@ -1,0 +1,3871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Centro" />
+  <title>Centro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="./manifest.json" />
+  <style>
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --surface-alt: #f8faf9;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --border: #e2e8f0;
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --primary-soft: #ccfbf1;
+  --secondary: #0369a1;
+  --secondary-soft: #e0f2fe;
+  --profit: #15803d;
+  --profit-soft: #dcfce7;
+  --warn: #b45309;
+  --warn-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+button,
+input,
+select,
+textarea,
+a,
+label {
+  touch-action: manipulation;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.app-shell {
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+/* Header */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--primary);
+  color: #ffffff;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.header-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+
+.header-avatar,
+.header-avatar-fallback {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.header-avatar-fallback {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 1.1rem;
+}
+
+.profile-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.profile-preview-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  background: var(--surface-alt);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.amway-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.amway-suggestion-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.amway-suggestion-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.18);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+/* Main */
+.app-main {
+  padding: 14px;
+}
+
+/* Google Cloud Sync Bar */
+.google-sync-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+
+.google-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.google-sync-info strong {
+  display: block;
+  font-size: 0.82rem;
+}
+
+.google-status-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-offline {
+  background: #94a3b8;
+}
+
+.dot-online {
+  background: #16a34a;
+}
+
+.dot-syncing {
+  background: #f59e0b;
+}
+
+.google-sync-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-google {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* Amway Notice Card */
+.amway-notice-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.notice-text {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.amway-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.chip-link-primary {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  border-color: #99f6e4;
+}
+
+/* Summary Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  box-shadow: var(--shadow);
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.summary-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.summary-card-profit {
+  background: var(--profit-soft);
+  border-color: #bbf7d0;
+}
+
+.summary-card-profit .summary-value {
+  color: var(--profit);
+}
+
+.summary-card-alert {
+  background: var(--warn-soft);
+  border-color: #fde68a;
+  cursor: pointer;
+}
+
+.summary-card-alert .summary-value {
+  color: var(--warn);
+}
+
+/* Add Actions */
+.add-actions-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-sm {
+  min-height: 38px;
+  padding: 6px 12px;
+  font-size: 0.84rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: #ffffff;
+}
+
+.btn-outline {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-danger-outline {
+  background: var(--surface);
+  color: var(--danger);
+  border-color: #fecaca;
+}
+
+.btn-text-danger {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Search, Filters, Sort */
+.controls-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-input,
+.select-input,
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.select-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Product Cards */
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow);
+}
+
+.product-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.product-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+}
+
+.product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-head-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.product-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.status-badge {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.status-ok {
+  background: var(--profit-soft);
+  color: var(--profit);
+}
+
+.status-low {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.status-out {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.product-meta {
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.product-details {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+/* Product Numbers Grid */
+.product-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin: 10px 0;
+  padding: 10px;
+  background: var(--surface-alt);
+  border-radius: 10px;
+  font-size: 0.82rem;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.metric-val {
+  font-weight: 700;
+}
+
+.text-profit {
+  color: var(--profit);
+}
+
+.text-special {
+  color: var(--secondary);
+}
+
+/* Quick Stock + Action Buttons */
+.stock-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.84rem;
+}
+
+.card-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.card-actions-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.action-btn {
+  min-height: 38px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.action-btn-sell {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.action-btn-box {
+  background: var(--secondary-soft);
+  color: var(--secondary);
+  border-color: #bae6fd;
+}
+
+.action-btn-danger {
+  color: var(--danger);
+  border-color: #fecaca;
+}
+
+/* Empty & Coming Soon */
+.empty-state,
+.coming-soon-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 18px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.empty-icon,
+.coming-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.empty-state h3,
+.coming-soon-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.empty-state p,
+.coming-soon-card p {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.06);
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1.15rem;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+/* Modals (Bottom Sheet on Mobile) */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.modal-sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  max-height: 92vh;
+  background: var(--surface);
+  border-radius: 18px 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.close-btn {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Form Elements */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.section-divider {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary-dark);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-top: 4px;
+}
+
+.catalog-picker-box {
+  background: var(--primary-soft);
+  border: 1px solid #99f6e4;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.catalog-picker-box label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.photo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.photo-preview-box {
+  width: 74px;
+  height: 74px;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: var(--surface-alt);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: 1.8rem;
+}
+
+.photo-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-upload-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auto-calc-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  padding: 6px 0;
+}
+
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
+}
+
+/* Catalog Modal List */
+.catalog-form-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalog-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalog-item-info strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.catalog-item-info span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Amway Smart Lookup Box */
+.amway-lookup-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.amway-lookup-box label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #166534;
+}
+
+.amway-ocr-status {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  color: #065f46;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.amway-ocr-status.scanning {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.amway-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 190px;
+  overflow-y: auto;
+}
+
+.amway-suggestion-item {
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 11px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.amway-suggestion-item:hover,
+.amway-suggestion-item:active {
+  border-color: var(--primary);
+  background: #f8fafc;
+}
+
+.amway-suggestion-item strong {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.amway-suggestion-item span {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  text-align: center;
+}
+
+/* Welcome / Onboarding Gate */
+.welcome-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  background: linear-gradient(160deg, #0f766e 0%, #115e59 55%, #0d4b46 100%);
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px 22px 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+  text-align: center;
+}
+
+.welcome-badge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+  background: var(--primary-soft);
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+}
+
+.welcome-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.welcome-desc {
+  margin: 0 0 22px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.welcome-skip-btn {
+  margin-top: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.welcome-avatar-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.welcome-avatar-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  background: var(--surface-alt);
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+}
+
+/* Intro Splash Screen (inspired by tech brand reveal) */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at 50% 42%, rgba(16, 185, 129, 0.18) 0%, #0b0f10 62%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.splash-screen.splash-hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-logo-wrap {
+  width: 118px;
+  height: 118px;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 0 28px rgba(34, 197, 94, 0.52));
+  animation: splashPop 1.0s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.splash-hex {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: splashDraw 1.35s ease-out 0.15s forwards;
+}
+
+.splash-c {
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: splashDraw 1.0s ease-out 0.65s forwards;
+}
+
+.splash-dot {
+  transform-origin: center;
+  transform: scale(0);
+  animation: splashDot 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.25s forwards;
+}
+
+.splash-brand {
+  margin: 22px 0 8px;
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  color: #22c55e;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: splashTextUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) 1.05s forwards;
+}
+
+.splash-tagline {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  color: rgba(255, 255, 255, 0.88);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: splashTextUp 0.75s ease-out 1.55s forwards;
+}
+
+.splash-sound-hint {
+  position: absolute;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+@keyframes splashPop {
+  0% { opacity: 0; transform: scale(0.65); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes splashDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes splashDot {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes splashTextUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <!-- Intro Splash Animation -->
+  <div id="splash-screen" class="splash-screen" aria-hidden="true">
+    <div class="splash-logo-wrap">
+      <svg width="108" height="108" viewBox="0 0 100 100">
+        <polygon class="splash-hex" points="50,6 88,28 88,72 50,94 12,72 12,28" fill="#101827" stroke="#22c55e" stroke-width="5.5" stroke-linejoin="round"/>
+        <path class="splash-c" d="M64 36a20 20 0 1 0 0 28" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+        <circle class="splash-dot" cx="50" cy="50" r="7" fill="#22c55e"/>
+      </svg>
+    </div>
+    <h2 class="splash-brand">CENTRO</h2>
+    <p class="splash-tagline">TU NEGOCIO EN UN SOLO LUGAR</p>
+    <span id="splash-sound-hint" class="splash-sound-hint hidden">🔊 Toca la pantalla para escuchar el sonido</span>
+  </div>
+
+  <!-- Welcome / Login Gate -->
+  <div id="welcome-screen" class="welcome-screen">
+    <div class="welcome-card">
+      <div id="welcome-step-google">
+        <div class="welcome-badge" style="background:transparent;padding:0;">
+          <svg width="68" height="68" viewBox="0 0 100 100" aria-hidden="true">
+            <defs>
+              <linearGradient id="centroGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f766e"/>
+                <stop offset="100%" stop-color="#14b8a6"/>
+              </linearGradient>
+            </defs>
+            <rect width="100" height="100" rx="26" fill="url(#centroGrad)"/>
+            <path d="M67 33a24 24 0 1 0 0 34" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="8.5" fill="#ffffff"/>
+          </svg>
+        </div>
+        <h2>Bienvenido a Centro</h2>
+        <p class="welcome-desc">Inicia sesión con tu cuenta de Google para entrar a tu espacio.</p>
+        <button type="button" id="btn-welcome-google" class="btn btn-google btn-full">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Iniciar sesión con Google
+        </button>
+        <button type="button" id="btn-welcome-skip" class="welcome-skip-btn">Entrar sin Google</button>
+      </div>
+
+      <div id="welcome-step-name" class="hidden">
+        <h2>¿Cómo te llamas?</h2>
+        <p class="welcome-desc">Tu nombre aparecerá arriba (ej. <strong>Centro de Carlos</strong>).</p>
+        <div class="welcome-avatar-picker">
+          <img id="welcome-avatar-img" class="welcome-avatar-circle hidden" alt="Tu foto" />
+          <span id="welcome-avatar-fallback" class="welcome-avatar-circle">👤</span>
+          <label for="welcome-photo-input" class="btn btn-outline btn-sm">📷 Agregar foto (opcional)</label>
+          <input type="file" id="welcome-photo-input" accept="image/*" hidden />
+        </div>
+        <form id="welcome-name-form">
+          <div class="form-group" style="text-align:left; margin-bottom:14px;">
+            <label for="welcome-name-input">Tu nombre *</label>
+            <input type="text" id="welcome-name-input" required placeholder="Ej. Carlos" autocomplete="given-name" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Entrar a Centro</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <button type="button" id="btn-header-profile" class="header-profile-btn" title="Cambiar foto y nombre">
+          <img id="header-avatar-img" class="header-avatar hidden" alt="Perfil" />
+          <span id="header-avatar-fallback" class="header-avatar-fallback">👤</span>
+          <h1 id="header-title">Centro</h1>
+        </button>
+        <button type="button" id="btn-open-tools" class="icon-btn" aria-label="Opciones y respaldo" title="Opciones y respaldo">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- TAB 4: INVENTARIO (PART 1 ACTIVE) -->
+      <section id="tab-inventario" class="tab-panel active">
+        <!-- Google Cloud Sync Bar -->
+        <div id="google-sync-bar" class="google-sync-bar">
+          <div class="google-sync-info">
+            <span id="google-status-dot" class="status-dot dot-offline"></span>
+            <div>
+              <strong id="google-status-title">Desconectado</strong>
+              <span id="google-status-sub" class="google-status-sub">Conecta tu cuenta Google para guardar en la nube</span>
+            </div>
+          </div>
+          <div class="google-sync-actions">
+            <button type="button" id="btn-google-signin" class="btn btn-google btn-sm">
+              <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+              Iniciar sesión con Google
+            </button>
+            <button type="button" id="btn-google-sync-now" class="btn btn-outline btn-sm hidden">
+              🔄 Sincronizar
+            </button>
+          </div>
+        </div>
+
+        <!-- Amway Notice + Quick Links -->
+        <div class="amway-notice-card">
+          <p class="notice-text">
+            <strong>Nota:</strong> Los precios cambian en Amway. Revisa el precio en tu app de Amway y actualízalo aquí si cambió. Esta página no se conecta sola a Amway.
+          </p>
+          <div class="amway-links">
+            <a href="https://www.amway.com" target="_blank" rel="noopener noreferrer" class="chip-link">
+              🔗 Ver precio en Amway+
+            </a>
+            <a href="https://www.amway.com" target="_blank" rel="noopener noreferrer" class="chip-link">
+              🛍️ Abrir mi tienda MyShop
+            </a>
+            <button type="button" id="btn-open-catalog" class="chip-link chip-link-primary">
+              📋 Mis Productos (<span id="catalog-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Summary Grid -->
+        <div class="summary-grid" aria-label="Resumen de inventario">
+          <div class="summary-card">
+            <span class="summary-label">Productos</span>
+            <strong class="summary-value" id="sum-products">0</strong>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Unidades totales</span>
+            <strong class="summary-value" id="sum-units">0</strong>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Valor al costo</span>
+            <strong class="summary-value" id="sum-cost">RD$ 0</strong>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Valor venta</span>
+            <strong class="summary-value" id="sum-sale">RD$ 0</strong>
+          </div>
+          <div class="summary-card summary-card-profit">
+            <span class="summary-label">Ganancia si vende todo</span>
+            <strong class="summary-value" id="sum-profit">RD$ 0</strong>
+          </div>
+          <div class="summary-card" style="background:var(--secondary-soft); border-color:#bae6fd;">
+            <span class="summary-label">Puntos PV totales</span>
+            <strong class="summary-value" id="sum-pv" style="color:var(--secondary);">0 PV</strong>
+          </div>
+          <button type="button" id="btn-filter-low-stock" class="summary-card summary-card-alert" title="Ver productos con stock bajo">
+            <span class="summary-label">Stock bajo</span>
+            <strong class="summary-value" id="sum-low">0</strong>
+          </button>
+        </div>
+
+        <!-- Primary Add Actions (2 Ways: Manual & Photo) -->
+        <div class="add-actions-bar">
+          <button type="button" id="btn-add-manual" class="btn btn-primary">
+            ➕ Agregar manual
+          </button>
+          <button type="button" id="btn-add-photo" class="btn btn-secondary">
+            📷 Tomar foto
+          </button>
+          <input type="file" id="quick-camera-input" accept="image/*" capture="environment" hidden />
+        </div>
+
+        <!-- Search, Filter & Sort -->
+        <div class="controls-card">
+          <div class="search-row">
+            <input
+              type="search"
+              id="search-input"
+              class="search-input"
+              placeholder="🔍 Buscar producto o detalle..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="filter-pills" id="status-filters" role="group" aria-label="Filtrar por estado">
+            <button type="button" class="pill active" data-filter="all">Todos</button>
+            <button type="button" class="pill" data-filter="low">Quedan pocas</button>
+            <button type="button" class="pill" data-filter="out">Agotado</button>
+          </div>
+
+          <div class="select-row">
+            <select id="category-filter" class="select-input" aria-label="Filtrar por categoría">
+              <option value="all">Todas las categorías</option>
+              <option value="Nutrición">Nutrición</option>
+              <option value="Belleza">Belleza</option>
+              <option value="Hogar">Hogar</option>
+              <option value="Cuidado personal">Cuidado personal</option>
+              <option value="Energía">Energía</option>
+              <option value="Otro">Otro</option>
+            </select>
+
+            <select id="sort-select" class="select-input" aria-label="Ordenar productos">
+              <option value="name">Ordenar: Nombre (A-Z)</option>
+              <option value="units-asc">Unidades (menor a mayor)</option>
+              <option value="units-desc">Unidades (mayor a menor)</option>
+              <option value="profit-desc">Mayor ganancia</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Product List -->
+        <div id="inventory-list" class="inventory-list"></div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon">📦</div>
+          <h3>Tu inventario está vacío</h3>
+          <p>Empieza agregando tus 3 productos principales con <strong>Agregar manual</strong> o <strong>Tomar foto</strong>.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD / EDIT PRODUCT -->
+  <div id="product-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close="product-modal"></div>
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 id="modal-title">Agregar producto</h2>
+        <button type="button" class="close-btn" data-close="product-modal" aria-label="Cerrar">✕</button>
+      </div>
+
+      <form id="product-form" class="modal-body">
+        <input type="hidden" id="prod-id" />
+
+        <!-- Quick Pick from Mis Productos -->
+        <div id="catalog-picker-box" class="catalog-picker-box">
+          <label for="catalog-pick-select">⚡ Rellenar rápido desde Mis Productos:</label>
+          <select id="catalog-pick-select" class="select-input">
+            <option value="">— Elegir producto guardado —</option>
+          </select>
+        </div>
+
+        <!-- Photo Section -->
+        <div class="photo-upload-row">
+          <div id="photo-preview-box" class="photo-preview-box">
+            <span class="photo-placeholder">📦</span>
+            <img id="photo-preview-img" class="hidden" alt="Vista previa del producto" />
+          </div>
+          <div class="photo-upload-controls">
+            <label for="prod-photo-input" class="btn btn-outline btn-sm">
+              📷 Cambiar / tomar foto
+            </label>
+            <input type="file" id="prod-photo-input" accept="image/*" hidden />
+            <button type="button" id="btn-remove-photo" class="btn-text-danger hidden">Quitar foto</button>
+            <p class="field-hint">La foto se usa para identificar el producto en Amway y rellenar sus datos.</p>
+          </div>
+        </div>
+
+        <!-- Amway Catalog Smart Lookup -->
+        <div id="amway-lookup-box" class="amway-lookup-box">
+          <label for="amway-search-input">🔎 Buscar producto en catálogo Amway (nombre o código):</label>
+          <div id="amway-ocr-status" class="amway-ocr-status hidden"></div>
+          <input
+            type="search"
+            id="amway-search-input"
+            placeholder="Ej. Double X, LOC, Glister, Omega, A4300..."
+            autocomplete="off"
+          />
+          <div id="amway-suggestions" class="amway-suggestions hidden"></div>
+          <label class="checkbox-row hidden" id="amway-discard-photo-row">
+            <input type="checkbox" id="amway-discard-photo" checked />
+            <span>Usar ficha limpia de Amway (no guardar la foto temporal de la cámara)</span>
+          </label>
+        </div>
+
+        <!-- Name & Category -->
+        <div class="form-group">
+          <label for="prod-name">Nombre del producto *</label>
+          <input type="text" id="prod-name" required placeholder="Ej. XS Energy Drink Mango" />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="prod-category">Categoría</label>
+            <select id="prod-category">
+              <option value="Nutrición">Nutrición</option>
+              <option value="Belleza">Belleza</option>
+              <option value="Hogar">Hogar</option>
+              <option value="Cuidado personal">Cuidado personal</option>
+              <option value="Energía">Energía</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="prod-pv" id="lbl-prod-pv">Puntos PV (por unidad)</label>
+            <input type="number" id="prod-pv" min="0" step="0.01" placeholder="0" />
+            <span class="field-hint hidden" id="prod-pv-unit-hint"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="prod-details">Detalles (sabor, tamaño, notas)</label>
+          <input type="text" id="prod-details" placeholder="Ej. Lata 250ml, caja de 12" />
+        </div>
+
+        <!-- Boxes & Units -->
+        <div class="section-divider">Cantidad en casa</div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="prod-units-per-box">Unidades por caja *</label>
+            <input type="number" id="prod-units-per-box" min="1" step="1" value="1" required />
+          </div>
+          <div class="form-group">
+            <label for="prod-boxes">Cajas cerradas</label>
+            <input type="number" id="prod-boxes" min="0" step="1" value="1" />
+          </div>
+          <div class="form-group">
+            <label for="prod-loose">Unidades sueltas</label>
+            <input type="number" id="prod-loose" min="0" step="1" value="0" />
+          </div>
+        </div>
+
+        <div class="auto-calc-box">
+          <div class="calc-item">
+            <span>Total de unidades en casa:</span>
+            <strong id="calc-total-units">1 unidad</strong>
+          </div>
+        </div>
+
+        <!-- Prices in RD$ -->
+        <div class="section-divider">Precios y costos (RD$)</div>
+
+        <div class="form-group hidden" id="cost-mode-box">
+          <label for="prod-cost-mode">¿Cómo quieres escribir lo que te cobró Amway?</label>
+          <select id="prod-cost-mode">
+            <option value="box">Por caja completa (la app lo divide sola)</option>
+            <option value="unit">Por 1 unidad individual</option>
+          </select>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="prod-ibo" id="lbl-prod-ibo">Precio IBO (RD$) *</label>
+            <input type="number" id="prod-ibo" min="0" step="0.01" required placeholder="0" />
+            <span class="field-hint hidden" id="prod-ibo-unit-hint"></span>
+          </div>
+          <div class="form-group">
+            <label for="prod-customer" id="lbl-prod-customer">Precio Cliente por unidad (RD$) *</label>
+            <input type="number" id="prod-customer" min="0" step="0.01" required placeholder="0" />
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="prod-special">Precio Especial (RD$)</label>
+            <input type="number" id="prod-special" min="0" step="0.01" placeholder="Opcional" />
+          </div>
+          <div class="form-group">
+            <label for="prod-shipping" id="lbl-prod-shipping">Envío (RD$)</label>
+            <input type="number" id="prod-shipping" min="0" step="0.01" value="0" />
+            <span class="field-hint" id="prod-shipping-hint">Pon lo que te cobró Amway</span>
+          </div>
+          <div class="form-group">
+            <label for="prod-tax" id="lbl-prod-tax">Impuesto / ITBIS</label>
+            <input type="number" id="prod-tax" min="0" step="0.01" value="0" />
+            <span class="field-hint" id="prod-tax-hint">Pon lo que te cobró Amway</span>
+          </div>
+        </div>
+
+        <!-- Auto-Calculated Cost & Profit Box -->
+        <div class="auto-calc-box">
+          <div class="calc-item">
+            <span id="lbl-calc-total-cost">Costo total para ti:</span>
+            <strong id="calc-total-cost">RD$ 0</strong>
+          </div>
+          <div class="calc-item">
+            <span>Ganancia por unidad (Cliente):</span>
+            <strong id="calc-profit-normal" class="text-profit">RD$ 0</strong>
+          </div>
+          <div class="calc-item hidden" id="calc-profit-box-row">
+            <span id="lbl-calc-profit-box">Ganancia por caja completa:</span>
+            <strong id="calc-profit-box" class="text-profit">RD$ 0</strong>
+          </div>
+          <div class="calc-item hidden" id="calc-profit-special-row">
+            <span>Ganancia precio especial:</span>
+            <strong id="calc-profit-special">RD$ 0</strong>
+          </div>
+        </div>
+
+        <!-- Save to Catalog Option -->
+        <label class="checkbox-row">
+          <input type="checkbox" id="prod-save-to-catalog" />
+          <span>Guardar también en <strong>Mis Productos</strong> para no volver a escribirlo</span>
+        </label>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="product-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CATÁLOGO AMWAY DR -->
+  <div id="catalog-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="catalog-modal-title">
+    <div class="modal-backdrop" data-close="catalog-modal"></div>
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 id="catalog-modal-title">Mis Productos</h2>
+        <button type="button" class="close-btn" data-close="catalog-modal" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="field-hint">
+          Guarda aquí tus <strong>3 productos principales</strong> una sola vez (desde Amway+). Cuando agregues inventario, los precios y puntos se rellenan solos.
+        </p>
+
+        <form id="catalog-form" class="catalog-form-box">
+          <input type="hidden" id="cat-id" />
+          <div class="form-group">
+            <label for="cat-name">Nombre del producto *</label>
+            <input type="text" id="cat-name" required placeholder="Ej. Doble X / Loc / XS" />
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="cat-category">Categoría</label>
+              <select id="cat-category">
+                <option value="Nutrición">Nutrición</option>
+                <option value="Belleza">Belleza</option>
+                <option value="Hogar">Hogar</option>
+                <option value="Cuidado personal">Cuidado personal</option>
+                <option value="Energía">Energía</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cat-pv">Puntos PV</label>
+              <input type="number" id="cat-pv" min="0" step="0.01" value="0" />
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="cat-ibo">Precio IBO *</label>
+              <input type="number" id="cat-ibo" min="0" step="0.01" required placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label for="cat-customer">Precio Cliente *</label>
+              <input type="number" id="cat-customer" min="0" step="0.01" required placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label for="cat-units">Unid. / caja</label>
+              <input type="number" id="cat-units" min="1" step="1" value="1" />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="cat-shipping">Envío (RD$)</label>
+              <input type="number" id="cat-shipping" min="0" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="cat-tax">Impuesto / ITBIS</label>
+              <input type="number" id="cat-tax" min="0" step="0.01" value="0" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Guardar en Catálogo</button>
+        </form>
+
+        <div class="section-divider">Productos guardados en tu catálogo</div>
+        <div id="catalog-list" class="catalog-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: TOOLS / BACKUP / EXPORT / IMPORT -->
+  <div id="tools-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tools-modal-title">
+    <div class="modal-backdrop" data-close="tools-modal"></div>
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 id="tools-modal-title">Opciones y respaldo</h2>
+        <button type="button" class="close-btn" data-close="tools-modal" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body tools-body">
+        <div class="section-divider">Mi perfil</div>
+        <div class="profile-edit-row">
+          <img id="profile-preview-img" class="profile-preview-avatar hidden" alt="Foto de perfil" />
+          <span id="profile-preview-fallback" class="profile-preview-avatar">👤</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <label for="profile-photo-input" class="btn btn-outline btn-sm">📷 Foto de perfil</label>
+            <input type="file" id="profile-photo-input" accept="image/*" hidden />
+            <button type="button" id="btn-remove-profile-photo" class="btn btn-text-danger btn-sm hidden">Quitar foto</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="profile-name-input">Tu nombre (para el título)</label>
+          <input type="text" id="profile-name-input" placeholder="Ej. Carlos" />
+        </div>
+
+        <div class="section-divider">Cuenta de Google</div>
+
+        <button type="button" id="btn-google-signin-modal" class="btn btn-google btn-full">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Iniciar sesión con Google
+        </button>
+
+        <button type="button" id="btn-google-signout" class="btn btn-danger-outline btn-full">
+          🚪 Cerrar sesión
+        </button>
+
+        <div class="section-divider">Respaldo en archivo</div>
+        <p class="field-hint">
+          Tus datos se guardan automáticamente en este teléfono. Exporta una copia para respaldar o compartir por WhatsApp.
+        </p>
+
+        <button type="button" id="btn-export-data" class="btn btn-primary btn-full">
+          📤 Exportar inventario (archivo)
+        </button>
+
+        <label for="import-file-input" class="btn btn-secondary btn-full">
+          📥 Importar archivo de inventario
+        </label>
+        <input type="file" id="import-file-input" accept="application/json,.json" hidden />
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script>
+(() => {
+  const STORAGE_INV = "amway_dr_inventory_v1";
+  const STORAGE_CAT = "amway_dr_catalog_v1";
+  const STORAGE_PROFILE = "amway_dr_profile_v1";
+  const STORAGE_AUTH = "amway_dr_session_v1";
+  const STORAGE_GCLIENT = "amway_dr_google_client_id";
+  const STORAGE_GMETA = "amway_dr_google_meta";
+
+  // Opcional: pega aquí tu Google OAuth Client ID una sola vez antes de publicar
+  const DEFAULT_GOOGLE_CLIENT_ID = "840684105586-uf930j95at6p2bhf6avvaago2tmp19lj.apps.googleusercontent.com";
+  const GOOGLE_SCOPES =
+    "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets";
+
+  // Catálogo oficial extraído del Catálogo Amway 2026-2027 (EE. UU. Español)
+  const AMWAY_CATALOG = [
+    // Nutrición - Nutrilite
+    { sku: "A4300", name: "Multivitamina Double X de Nutrilite (con bandeja)", en: "nutrilite double x multivitamin tray", category: "Nutrición", size: "186 tabletas (31 días)", unitsPerBox: 1, desc: "22 vitaminas, minerales y nutrientes de 22 frutas, verduras y hierbas." },
+    { sku: "A0244", name: "Multivitamina Double X de Nutrilite (reemplazo)", en: "nutrilite double x refill", category: "Nutrición", size: "186 tabletas (31 días)", unitsPerBox: 1, desc: "Reemplazo de Double X con 22 vitaminas, minerales y fitonutrientes." },
+    { sku: "123364", name: "Multivitamina Double X de Nutrilite (10 días)", en: "nutrilite double x 10 day", category: "Nutrición", size: "20 paquetes (10 días)", unitsPerBox: 20, desc: "Paquetes prácticos de Double X para 10 días." },
+    { sku: "125557", name: "Multivitamínico diario para hombres Nutrilite", en: "nutrilite men daily multivitamin", category: "Nutrición", size: "90 tabletas", unitsPerBox: 1, desc: "22 vitaminas y minerales esenciales + 200 mg de nutrientes de plantas." },
+    { sku: "125559", name: "Multivitamínico diario para mujeres Nutrilite", en: "nutrilite women daily multivitamin", category: "Nutrición", size: "90 tabletas", unitsPerBox: 1, desc: "23 vitaminas y minerales esenciales + 200 mg de nutrientes de plantas." },
+    { sku: "125561", name: "Multigomitas diarias para hombres Nutrilite Organics", en: "nutrilite organics daily multi gummies men", category: "Nutrición", size: "120 gomitas", unitsPerBox: 1, desc: "13 vitaminas y minerales orgánicos para energía, músculos y corazón." },
+    { sku: "125562", name: "Multigomitas diarias para mujeres Nutrilite Organics", en: "nutrilite organics daily multi gummies women", category: "Nutrición", size: "120 gomitas", unitsPerBox: 1, desc: "15 vitaminas y minerales orgánicos para inmunidad, huesos y ojos." },
+    { sku: "100648", name: "Concentrado de frutas y verduras Nutrilite", en: "nutrilite concentrated fruits and vegetables", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Fitonutrientes equivalentes a más de 5 porciones de frutas y verduras." },
+    { sku: "123377", name: "Paquete perfecto Nutrilite", en: "nutrilite perfect pack", category: "Nutrición", size: "60 paquetes", unitsPerBox: 60, desc: "Double X, Concentrado de frutas y verduras, Omega avanzado y Vitamina D." },
+    { sku: "125921", name: "Proteína vegetal en polvo Nutrilite Organics (Chocolate)", en: "nutrilite organics plant protein powder chocolate", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "21 g de proteína vegetal con 9 aminoácidos esenciales." },
+    { sku: "125923", name: "Proteína vegetal en polvo Nutrilite Organics (Vainilla)", en: "nutrilite organics plant protein powder vanilla", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "21 g de proteína vegetal con 9 aminoácidos esenciales." },
+    { sku: "125925", name: "Proteína vegetal en polvo Nutrilite Organics (Sin sabor)", en: "nutrilite organics plant protein powder unflavored", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "21 g de proteína vegetal sin sabor." },
+    { sku: "318668", name: "Batidos todo en uno Nutrilite Organics (Chocolate)", en: "nutrilite organics all-in-one shake chocolate", category: "Nutrición", size: "12 batidos", unitsPerBox: 12, desc: "20 g de proteína vegetal, 25 vitaminas y minerales, 5 g de fibra." },
+    { sku: "318669", name: "Batidos todo en uno Nutrilite Organics (Vainilla)", en: "nutrilite organics all-in-one shake vanilla", category: "Nutrición", size: "12 batidos", unitsPerBox: 12, desc: "20 g de proteína vegetal, 25 vitaminas y minerales, 5 g de fibra." },
+    { sku: "126136", name: "Omega avanzado Nutrilite", en: "nutrilite advanced omega", category: "Nutrición", size: "60 cápsulas blandas", unitsPerBox: 1, desc: "Más de 1,000 mg de omega 3 esenciales (EPA, DHA, ALA) con absorción 3x." },
+    { sku: "126132", name: "Omega Nutrilite", en: "nutrilite omega", category: "Nutrición", size: "30 cápsulas blandas", unitsPerBox: 1, desc: "Más de 500 mg de ácidos grasos omega 3 en 1 cápsula al día." },
+    { sku: "127725", name: "Preparación intestinal diaria Nutrilite Begin", en: "nutrilite begin daily gi primer", category: "Nutrición", size: "30 porciones", unitsPerBox: 1, desc: "Apoyo integral 6 en 1 para salud intestinal, digestión e inmunidad." },
+    { sku: "120571", name: "Probiótico Balance Within de Nutrilite", en: "nutrilite balance within probiotic", category: "Nutrición", size: "30 sobres individuales", unitsPerBox: 30, desc: "6.3 mil millones de UFC para apoyar digestión e inmunidad." },
+    { sku: "127444", name: "Fibra prebiótica Nutrilite", en: "nutrilite prebiotic fiber", category: "Nutrición", size: "30 sobres individuales", unitsPerBox: 30, desc: "Fibra soluble vegetal para digestión y microbioma intestinal." },
+    { sku: "A8903", name: "Enzimas digestivas Nutrilite", en: "nutrilite digestive enzyme", category: "Nutrición", size: "90 cápsulas", unitsPerBox: 1, desc: "Apoya la digestión de carbohidratos, proteína, grasa y lácteos." },
+    { sku: "308635", name: "Té de menta y jengibre Nutrilite Organics", en: "nutrilite organics ginger mint tea", category: "Nutrición", size: "20 bolsitas de té", unitsPerBox: 20, desc: "Infusión orgánica para apoyar la digestión." },
+    { sku: "128032", name: "Magnesio Nutrilite", en: "nutrilite magnesium", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "Mezcla triple de magnesio marino para sueño, estrés, músculos y corazón." },
+    { sku: "127813", name: "Apoyo para salud celular Nutrilite", en: "nutrilite cellular aging support", category: "Nutrición", size: "120 cápsulas", unitsPerBox: 1, desc: "Suplemento 3 en 1 para reciclaje, energía y protección celular." },
+    { sku: "A8084", name: "Apoyo al hígado Nutrilite", en: "nutrilite liver support", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Cardo mariano, diente de león y cúrcuma para salud hepática." },
+    { sku: "A4042", name: "Vitamina E masticable Nutrilite", en: "nutrilite chewable vitamin e", category: "Nutrición", size: "270 tabletas", unitsPerBox: 1, desc: "60 mg de vitamina E antioxidante masticable con sabor nuez de arce y miel." },
+    { sku: "110171", name: "Suplemento Vitamina B de acción doble Nutrilite", en: "nutrilite vitamin b dual-action", category: "Nutrición", size: "120 tabletas", unitsPerBox: 1, desc: "8 vitaminas B esenciales de liberación instantánea y constante." },
+    { sku: "123842", name: "Paquete de Ultra enfoque y energía Nutrilite", en: "nutrilite ultra focus energy pack", category: "Nutrición", size: "20 paquetes", unitsPerBox: 20, desc: "Ginkgo biloba, té verde y rhodiola rosea para enfoque y energía." },
+    { sku: "125937", name: "Superalimento verde en polvo Nutrilite Organics", en: "nutrilite organics green superfood powder", category: "Nutrición", size: "30 porciones", unitsPerBox: 1, desc: "6 vitaminas B y 10 verduras y hierbas orgánicas." },
+    { sku: "127940", name: "Salud del sueño Nutrilite", en: "nutrilite sleep health", category: "Nutrición", size: "30 cápsulas", unitsPerBox: 1, desc: "3 mg de melatonina vegetal y manzanilla para buen descanso." },
+    { sku: "124506", name: "Dulces Sueños n* by Nutrilite (Gomitas para dormir)", en: "nutrilite sweet dreams gummies", category: "Nutrición", size: "30 porciones", unitsPerBox: 1, desc: "Gomitas sabor moras azules y lavanda con melatonina y pasionaria." },
+    { sku: "308641", name: "Ashwagandha Nutrilite Organics", en: "nutrilite organics ashwagandha", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "890 mg de ashwagandha orgánica para estrés ocasional y calma." },
+    { sku: "125514", name: "Probiótico para el estrés Nutrilite", en: "nutrilite stress relief probiotic", category: "Nutrición", size: "30 cápsulas", unitsPerBox: 1, desc: "Ayuda a reducir el estrés ocasional y apoya la digestión." },
+    { sku: "308636", name: "Té de manzanilla Nutrilite Organics", en: "nutrilite organics chamomile tea", category: "Nutrición", size: "20 bolsitas de té", unitsPerBox: 20, desc: "Té orgánico sin cafeína con manzanilla y equinácea." },
+    { sku: "119346", name: "Vitamina D Nutrilite", en: "nutrilite vitamin d", category: "Nutrición", size: "90 tabletas", unitsPerBox: 1, desc: "50 mcg de vitamina D de champiñones + vitamina K2 para huesos e inmunidad." },
+    { sku: "124692", name: "Defensa inmunológica Nutrilite con zinc y albahaca sagrada", en: "nutrilite immunity defense zinc holy basil", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Apoyo inmunológico y respiratorio con zinc y albahaca sagrada." },
+    { sku: "A5986", name: "Equinácea para inmunidad Nutrilite", en: "nutrilite immunity echinacea", category: "Nutrición", size: "120 tabletas", unitsPerBox: 1, desc: "Apoyo clínicamente probado para el sistema inmunológico." },
+    { sku: "124555", name: "Protégete n* by Nutrilite (Gomitas inmunidad)", en: "nutrilite go shield gummies", category: "Nutrición", size: "30 porciones", unitsPerBox: 1, desc: "Gomitas con vitamina C, zinc y saúco para inmunidad." },
+    { sku: "102735", name: "Suplemento ClearGuard de Nutrilite", en: "nutrilite clearguard", category: "Nutrición", size: "180 tabletas", unitsPerBox: 1, desc: "Ayuda a despejar fosas nasales naturalmente en 3 días o menos." },
+    { sku: "109745", name: "Vitamina C de acción prolongada Nutrilite (60 tab)", en: "nutrilite vitamin c extended release 60", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Vitamina C de liberación lenta durante todo el día." },
+    { sku: "109747", name: "Vitamina C de acción prolongada Nutrilite (180 tab)", en: "nutrilite vitamin c extended release 180", category: "Nutrición", size: "180 tabletas", unitsPerBox: 1, desc: "Vitamina C de liberación lenta durante todo el día (frasco grande)." },
+    { sku: "125936", name: "Superalimento para la inmunidad en polvo Nutrilite Organics", en: "nutrilite organics immunity superfood powder", category: "Nutrición", size: "30 porciones", unitsPerBox: 1, desc: "Apoyo inmunológico natural con 10 frutas orgánicas." },
+    { sku: "308642", name: "Cúrcuma Nutrilite Organics", en: "nutrilite organics turmeric", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "Extracto potente de cúrcuma para salud articular y respuesta inflamatoria." },
+    { sku: "104664", name: "Salud de las articulaciones Nutrilite (120 tab)", en: "nutrilite joint health 120", category: "Nutrición", size: "120 tabletas", unitsPerBox: 1, desc: "Glucosamina y condroitina para articulaciones saludables." },
+    { sku: "106964", name: "Salud de las articulaciones Nutrilite (240 tab)", en: "nutrilite joint health 240", category: "Nutrición", size: "240 tabletas", unitsPerBox: 1, desc: "Glucosamina y condroitina para articulaciones (frasco grande)." },
+    { sku: "110610", name: "Cal Mag D Nutrilite", en: "nutrilite cal mag d", category: "Nutrición", size: "180 tabletas", unitsPerBox: 1, desc: "600 mg de calcio, 200 mg de magnesio de algas y vitamina D." },
+    { sku: "123362", name: "Paquete de salud ósea Nutrilite", en: "nutrilite bone health pack", category: "Nutrición", size: "60 paquetes", unitsPerBox: 60, desc: "Cal Mag D, vitamina D y Bone Guard en paquetes diarios." },
+    { sku: "308639", name: "Champiñón melena de león Nutrilite Organics", en: "nutrilite organics lion mane mushroom", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "Apoya la salud cerebral, cognitiva y nerviosa." },
+    { sku: "124708", name: "Salud de la visión Nutrilite", en: "nutrilite vision health", category: "Nutrición", size: "60 cápsulas blandas", unitsPerBox: 1, desc: "Ayuda a filtrar luz azul y apoya visión saludable." },
+    { sku: "111106", name: "Suplemento Memory Builder de Nutrilite", en: "nutrilite memory builder", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Cistanche tubulosa y ginkgo biloba para memoria a corto y largo plazo." },
+    { sku: "A5923", name: "Cuidado del corazón con ajo Nutrilite", en: "nutrilite garlic heart care", category: "Nutrición", size: "120 tabletas", unitsPerBox: 1, desc: "6 mg de alicina por porción para apoyar presión y colesterol saludables." },
+    { sku: "A8601", name: "Salud del corazón CoQ10 Nutrilite", en: "nutrilite heart health coq10", category: "Nutrición", size: "60 cápsulas blandas", unitsPerBox: 1, desc: "Coenzima Q10 para energía celular y salud del corazón." },
+    { sku: "100070", name: "Salud del colesterol Nutrilite", en: "nutrilite cholesterol health", category: "Nutrición", size: "60 cápsulas blandas", unitsPerBox: 1, desc: "Fitonutrientes y antioxidantes para colesterol saludable." },
+    { sku: "123367", name: "Paquete para la salud del corazón Nutrilite", en: "nutrilite heart health pack", category: "Nutrición", size: "60 paquetes", unitsPerBox: 60, desc: "Omega avanzado, CoQ10 y Salud del colesterol." },
+    { sku: "A8004", name: "Salud de la próstata Nutrilite", en: "nutrilite prostate health", category: "Nutrición", size: "100 cápsulas blandas", unitsPerBox: 1, desc: "Mezcla botánica con serenoa para salud de la próstata." },
+    { sku: "308640", name: "Cápsulas de epimedium y tribulus Nutrilite Organics", en: "nutrilite organics horny goat weed tribulus", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "Apoyo orgánico para vitalidad y salud sexual." },
+    { sku: "123365", name: "Paquete para hombres Nutrilite", en: "nutrilite men pack", category: "Nutrición", size: "30 paquetes", unitsPerBox: 30, desc: "Multivitamínico hombres, frutas y verduras, omega y vitamina C." },
+    { sku: "126154", name: "Apoyo completo para la menopausia Nutrilite", en: "nutrilite complete menopause support", category: "Nutrición", size: "30 tabletas", unitsPerBox: 1, desc: "Ruibarbo siberiano para aliviar síntomas de la menopausia." },
+    { sku: "126161", name: "Apoyo de ciclo Nutrilite", en: "nutrilite cycle support", category: "Nutrición", size: "30 cápsulas", unitsPerBox: 1, desc: "Sauzgatillo y azafrán para bienestar del ciclo menstrual." },
+    { sku: "102046", name: "Hierro fólico Nutrilite", en: "nutrilite iron folic", category: "Nutrición", size: "90 tabletas", unitsPerBox: 1, desc: "Tres fuentes de hierro con ácido fólico y plantas ricas en hierro." },
+    { sku: "123372", name: "Paquete para mujeres Nutrilite", en: "nutrilite women pack", category: "Nutrición", size: "30 paquetes", unitsPerBox: 30, desc: "Multivitamínico mujeres, frutas y verduras, Cal Mag D y Cabello, piel y uñas." },
+    { sku: "125553", name: "Péptidos de colágeno #sinfiltro n* by Nutrilite", en: "nutrilite nofilter collagen peptides", category: "Nutrición", size: "15 sobres de 13.5 g", unitsPerBox: 15, desc: "13 g de colágeno y aloe para nutrir la piel." },
+    { sku: "124936", name: "Shots de colágeno n* by Nutrilite", en: "nutrilite collagen shots", category: "Nutrición", size: "9 shots de 89 ml", unitsPerBox: 9, desc: "7 g de colágeno, ácido hialurónico y acerola sabor cereza-mora." },
+    { sku: "A7553", name: "Salud del cabello, piel y uñas Nutrilite", en: "nutrilite hair skin nail health", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "1,000 mcg de biotina, 500 mg de colágeno y fitonutrientes." },
+    { sku: "123043", name: "Multivitamínico masticable diario para niños Nutrilite", en: "nutrilite kids daily chewable", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "18 vitaminas y minerales para niños en crecimiento." },
+    { sku: "305554", name: "Brainiums DHA para niños Nutrilite (Jelly splat)", en: "nutrilite kids brainiums dha jelly splats", category: "Nutrición", size: "30 jelly splats", unitsPerBox: 30, desc: "360 mg de omega 3 sin azúcar sabor fresa y cítricos." },
+    { sku: "123046", name: "Inmunidad total en polvo para niños Nutrilite", en: "nutrilite kids complete immunity", category: "Nutrición", size: "30 sobres", unitsPerBox: 30, desc: "Vitaminas C y D, probióticos y zinc de fusión rápida." },
+    { sku: "126185", name: "Gotas de inmunidad para Niños Nutrilite", en: "nutrilite toddler immunity drops", category: "Nutrición", size: "30 ml / 1.01 oz", unitsPerBox: 1, desc: "Gotas inmunológicas para niños de 1 a 3 años." },
+    { sku: "318670", name: "Comida completa en polvo Nutrilite Organics (Chocolate)", en: "nutrilite organics all-in-one meal powder chocolate", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "20 g proteína vegetal, 25 vitaminas/minerales y 6 g fibra." },
+    { sku: "318671", name: "Comida completa en polvo Nutrilite Organics (Vainilla)", en: "nutrilite organics all-in-one meal powder vanilla", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "20 g proteína vegetal, 25 vitaminas/minerales y 6 g fibra." },
+    { sku: "318672", name: "Comida completa en polvo Nutrilite Organics (Mora)", en: "nutrilite organics all-in-one meal powder berry", category: "Nutrición", size: "15 porciones", unitsPerBox: 1, desc: "20 g proteína vegetal, 25 vitaminas/minerales y 6 g fibra." },
+    { sku: "316302", name: "Barras todo en uno Nutrilite Organics (Mantequilla de maní)", en: "nutrilite organics all-in-one bars peanut butter", category: "Nutrición", size: "12 barras", unitsPerBox: 12, desc: "12 g proteína vegetal, 25 vitaminas/minerales y 8 g fibra." },
+    { sku: "316303", name: "Barras todo en uno Nutrilite Organics (Chocolate doble)", en: "nutrilite organics all-in-one bars double chocolate", category: "Nutrición", size: "12 barras", unitsPerBox: 12, desc: "12 g proteína vegetal, 25 vitaminas/minerales y 8 g fibra." },
+    { sku: "110922", name: "Tubitos 2GO de Nutrilite (Paquete surtido)", en: "nutrilite twist tubes 2go variety pack", category: "Nutrición", size: "20 tubos", unitsPerBox: 20, desc: "Infusores hidratantes bajos en calorías con vitaminas y antioxidantes." },
+    { sku: "111045", name: "Barras de bienestar Nutrilite (Chocolate oscuro con nueces)", en: "nutrilite wellness bar nutty dark chocolate", category: "Nutrición", size: "12 barras", unitsPerBox: 12, desc: "8 g de proteína sin conservantes artificiales." },
+    { sku: "100280", name: "Masa magra Nutrilite (CLA)", en: "nutrilite lean muscle cla", category: "Nutrición", size: "180 cápsulas blandas", unitsPerBox: 1, desc: "Ácido linoleico conjugado para reducir grasa corporal y retener músculo." },
+    { sku: "117085", name: "Suplemento nutricional Slimmetry de Nutrilite", en: "nutrilite slimmetry", category: "Nutrición", size: "60 tabletas", unitsPerBox: 1, desc: "Extracto de té verde sin cafeína para control de peso." },
+    { sku: "100193", name: "Bloqueador de carbohidratos Nutrilite", en: "nutrilite carb blocker", category: "Nutrición", size: "90 tabletas", unitsPerBox: 1, desc: "Inhibe digestión de azúcares simples y carbohidratos complejos." },
+    { sku: "127620", name: "Pre y postbiótico metabólico Nutrilite", en: "nutrilite metabolic pre postbiotic", category: "Nutrición", size: "60 cápsulas", unitsPerBox: 1, desc: "Apoya composición corporal saludable y metabolismo normal." },
+
+    // Energía & Deportes - XS
+    { sku: "266673", name: "Bebida de energía XS Elite Focus (Mango durazno)", en: "xs elite focus energy drink peach mango", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Cafeína natural, megadosis de vitaminas B, rhodiola y electrolitos." },
+    { sku: "126199", name: "Bebida de energía XS (Tropical)", en: "xs energy drink tropical", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Sin azúcar, 114 mg de cafeína y vitaminas B." },
+    { sku: "126197", name: "Bebida de energía XS (Arándano-Uva)", en: "xs energy drink cranberry grape", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Sin azúcar, 114 mg de cafeína y vitaminas B." },
+    { sku: "126184", name: "Bebida de energía XS (Cítrico)", en: "xs energy drink citrus", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Sin azúcar, 114 mg de cafeína y vitaminas B." },
+    { sku: "101444", name: "Bebida de energía XS (Limonada)", en: "xs energy drink lemonade", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Sin azúcar, 114 mg de cafeína y vitaminas B." },
+    { sku: "127070", name: "Bebida de energía XS (Caja surtida)", en: "xs energy drink variety pack", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Caja surtida de bebidas energizantes XS sin azúcar." },
+    { sku: "127935", name: "Bebida XS Energy + Burn (Frambuesa azul)", en: "xs energy burn blue razz", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Extracto de té verde, EGCG, cromo y vitamina C." },
+    { sku: "127936", name: "Bebida XS Energy + Burn (Kiwi y fresa)", en: "xs energy burn kiwi strawberry", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "Extracto de té verde, EGCG, cromo y vitamina C." },
+    { sku: "126986", name: "Jugo de energía XS burbujeante (Mango, piña y guayaba)", en: "xs sparkling energy juice mango pineapple guava", category: "Energía", size: "12 latas de 355 ml", unitsPerBox: 12, desc: "25% jugo de fruta real y 250% vitamina C." },
+    { sku: "316375", name: "Pre-entrenamiento XS (Frambuesa azul)", en: "xs pre-workout boost blue raspberry", category: "Energía", size: "1 sobre (30 porciones)", unitsPerBox: 1, desc: "Beta-alanina, L-citrulina, cafeína natural y rhodiola." },
+    { sku: "101593", name: "Enfoque y energía XS (Suplemento nutricional)", en: "xs energy focus tablets", category: "Energía", size: "60 tabletas", unitsPerBox: 1, desc: "75 mg de cafeína natural de té verde y 100 mg de rhodiola rosea." },
+    { sku: "128463", name: "Creatina+ XS (Sin sabor)", en: "xs creatine", category: "Energía", size: "30 porciones", unitsPerBox: 1, desc: "5 g de monohidrato de creatina + 2 g calcio HMB + electrolitos." },
+    { sku: "126753", name: "XS Muscle Multiplier (Mora)", en: "xs muscle multiplier berry blast", category: "Energía", size: "30 porciones", unitsPerBox: 1, desc: "9 aminoácidos esenciales (EAA) en proporción BCAA 5:1:1." },
+    { sku: "126754", name: "XS Muscle Multiplier (Sandía)", en: "xs muscle multiplier watermelon", category: "Energía", size: "30 porciones", unitsPerBox: 1, desc: "9 aminoácidos esenciales (EAA) sabor sandía, sin azúcar." },
+    { sku: "128154", name: "Proteína de suero XS alimentada con pasto (Chocolate)", en: "xs grass-fed whey protein chocolate", category: "Energía", size: "20 porciones", unitsPerBox: 1, desc: "30 g de aislado de proteína de suero y 6.9 g BCAA." },
+    { sku: "128156", name: "Proteína de suero XS alimentada con pasto (Vainilla)", en: "xs grass-fed whey protein vanilla", category: "Energía", size: "20 porciones", unitsPerBox: 1, desc: "30 g de aislado de proteína de suero sabor vainilla." },
+    { sku: "110369", name: "Batidos de proteína para deportes XS (Chocolate intenso)", en: "xs sports protein shake chocolate", category: "Energía", size: "12 batidos de 325 ml", unitsPerBox: 12, desc: "25 g de proteína de suero y caseína." },
+    { sku: "110385", name: "Barras de proteína para deportes XS (Chocolate y maní)", en: "xs sports protein bar chocolate peanut butter", category: "Energía", size: "12 barras", unitsPerBox: 12, desc: "20 g de proteína sin gluten." },
+    { sku: "127811", name: "Impulso en polvo XS (Naranja sanguina Moro)", en: "xs ignite powder moro blood orange", category: "Energía", size: "30 sobres individuales", unitsPerBox: 30, desc: "Extracto Morosil 400 mg para apoyar metabolismo y control de peso." },
+    { sku: "305555", name: "Tubitos deportivos XS (Limonada de frambuesa)", en: "xs sports twist tubes raspberry lemonade", category: "Energía", size: "20 tubos", unitsPerBox: 20, desc: "Suplemento de hidratación con vitaminas B y selenio." },
+    { sku: "110601", name: "Mezcla hidratante Agua de coco XS (Fresa y sandía)", en: "xs cocowater hydration strawberry watermelon", category: "Energía", size: "12 paquetes", unitsPerBox: 12, desc: "12% agua de coco, magnesio, potasio y vitaminas A, B, C y E." },
+    { sku: "316379", name: "Recuperación pos-entrenamiento XS (Ponche de frutas)", en: "xs post-workout recovery fruit punch", category: "Energía", size: "1 sobre (30 porciones)", unitsPerBox: 1, desc: "L-glutamina, glucosamina, cúrcuma y aminoácidos." },
+    { sku: "300323", name: "Crema Pro de CBD XS", en: "xs cbd pro cream 400mg", category: "Energía", size: "56.69 g / 2.0 oz", unitsPerBox: 1, desc: "400 mg de CBD de cáñamo para recuperación muscular." },
+
+    // Belleza - Artistry
+    { sku: "123792", name: "Limpiador equilibrador en gel Artistry Skin Nutrition", en: "artistry skin nutrition balancing jelly cleanser", category: "Belleza", size: "125 g / 4.4 oz", unitsPerBox: 1, desc: "Gel refrescante que limpia suciedad y exceso de grasa." },
+    { sku: "123794", name: "Mezcla tónica equilibrio fresco Artistry Skin Nutrition", en: "artistry skin nutrition balancing fresh shake toner", category: "Belleza", size: "200 ml / 6.7 oz", unitsPerBox: 1, desc: "Controla exceso de sebo y reduce apariencia de poros." },
+    { sku: "123797", name: "Loción de gel equilibrio mate Artistry Skin Nutrition", en: "artistry skin nutrition balancing matte gel lotion", category: "Belleza", size: "50 g / 1.7 oz", unitsPerBox: 1, desc: "Hidratación ligera 24 horas con acabado mate." },
+    { sku: "123793", name: "Espuma limpiadora hidratante Artistry Skin Nutrition", en: "artistry skin nutrition hydrating mousse cleanser", category: "Belleza", size: "145 ml / 4.9 oz", unitsPerBox: 1, desc: "Espuma suave que elimina impurezas sin resecar." },
+    { sku: "123795", name: "Tónico de hidratación suavizante Artistry Skin Nutrition", en: "artistry skin nutrition hydrating smoothing toner", category: "Belleza", size: "200 ml / 6.7 oz", unitsPerBox: 1, desc: "Deja la piel suave, sedosa e hidratada." },
+    { sku: "123798", name: "Crema hidratante en gel Artistry Skin Nutrition", en: "artistry skin nutrition hydrating gel cream", category: "Belleza", size: "50 g / 1.7 oz", unitsPerBox: 1, desc: "Hidratación intensa por 24 horas para piel seca." },
+    { sku: "123781", name: "Limpiador de espuma renovadora Artistry Skin Nutrition", en: "artistry skin nutrition renewing foaming cleanser", category: "Belleza", size: "125 g / 4.4 oz", unitsPerBox: 1, desc: "Limpia maquillaje e impurezas dejando piel tersa." },
+    { sku: "123783", name: "Tónico renovador suavizante Artistry Skin Nutrition", en: "artistry skin nutrition renewing softening toner", category: "Belleza", size: "200 ml / 6.7 oz", unitsPerBox: 1, desc: "Suaviza y aporta brillo natural antiedad." },
+    { sku: "123785", name: "Crema de reactivación renovadora Artistry Skin Nutrition", en: "artistry skin nutrition renewing reactivation cream", category: "Belleza", size: "50 g / 1.7 oz", unitsPerBox: 1, desc: "Reduce líneas y arrugas y reactiva la vitalidad de la piel." },
+    { sku: "123786", name: "Crema de levantamiento reafirmante ultra Artistry Skin Nutrition", en: "artistry skin nutrition firming ultra lifting cream", category: "Belleza", size: "50 g / 1.7 oz", unitsPerBox: 1, desc: "Reafirma piel flácida y reduce arrugas profundas." },
+    { sku: "125575", name: "Mascarilla para dormir Artistry Skin Nutrition", en: "artistry skin nutrition sleeping mask", category: "Belleza", size: "80 ml / 2.7 oz", unitsPerBox: 1, desc: "Hidratación nocturna de hasta 8 horas mientras duermes." },
+    { sku: "124823", name: "Protector UV multidefensa SPF 50+ Artistry Skin Nutrition", en: "artistry skin nutrition multi-defense uv protect spf 50", category: "Belleza", size: "50 ml / 1.7 oz", unitsPerBox: 1, desc: "Protección solar SPF 50+ resistente al agua 80 min." },
+    { sku: "125517", name: "Suero diario de vitamina C + AH3 Artistry Skin Nutrition", en: "artistry skin nutrition vitamin c ha3 daily serum", category: "Belleza", size: "12 ml / 0.40 oz", unitsPerBox: 1, desc: "Vitamina C + ácido hialurónico triple para iluminar y reafirmar." },
+    { sku: "127019", name: "Suero desafiante Artistry Skin Nutrition", en: "artistry skin nutrition defying serum", category: "Belleza", size: "30 ml / 1.0 oz", unitsPerBox: 1, desc: "Trata primeros signos del envejecimiento y minimiza poros." },
+    { sku: "127020", name: "Suero corrector Artistry Skin Nutrition", en: "artistry skin nutrition correcting serum", category: "Belleza", size: "30 ml / 1.0 oz", unitsPerBox: 1, desc: "Atenúa signos avanzados del envejecimiento en rostro y cuello." },
+    { sku: "128047", name: "Gotas de omega Artistry Skin Nutrition", en: "artistry skin nutrition omega drops", category: "Belleza", size: "20 ml / 0.67 oz", unitsPerBox: 1, desc: "Aceite facial 99% vegetal con omega 3, 6, 7 y 9." },
+    { sku: "127571", name: "Crema enriquecida Artistry LongXevity", en: "artistry longxevity rich cream", category: "Belleza", size: "50 ml / 1.7 oz", unitsPerBox: 1, desc: "Tratamiento antiedad celular para 12 signos del envejecimiento." },
+    { sku: "109709", name: "Suero reafirmante antiarrugas Artistry Intensive Skincare", en: "artistry intensive skincare anti-wrinkle firming serum", category: "Belleza", size: "30 ml / 1.0 oz", unitsPerBox: 1, desc: "Retinol avanzado y péptidos para firmeza y elasticidad." },
+    { sku: "124811", name: "Radiante Start Toallitas micelares Artistry Studio", en: "artistry studio clean start micellar wipes", category: "Belleza", size: "30 toallitas", unitsPerBox: 30, desc: "Toallitas desmaquilladoras sin enjuague." },
+    { sku: "124812", name: "Illuminance Limpiador + Exfoliante Artistry Studio", en: "artistry studio cleanser exfoliator", category: "Belleza", size: "125 ml / 4.2 oz", unitsPerBox: 1, desc: "Limpiador exfoliante diario Zen + Energía." },
+    { sku: "122339", name: "Mascarilla pulidora Artistry Signature Select", en: "artistry signature select polishing mask", category: "Belleza", size: "100 g / 3.5 oz", unitsPerBox: 1, desc: "Exfoliante de azúcar natural con extracto de grosella negra." },
+    { sku: "122342", name: "Mascarilla purificadora Artistry Signature Select", en: "artistry signature select purifying mask", category: "Belleza", size: "100 g / 3.5 oz", unitsPerBox: 1, desc: "Limpieza profunda de poros con arcilla francesa y cítricos." },
+    { sku: "122343", name: "Mascarilla hidratante Artistry Signature Select", en: "artistry signature select hydrating mask", category: "Belleza", size: "100 g / 3.5 oz", unitsPerBox: 1, desc: "Humectación duradera con extracto de té verde." },
+    { sku: "127831", name: "Prebase suavizante Artistry Ever Perfect", en: "artistry ever perfect smoothing primer", category: "Belleza", size: "30 ml / 1.0 oz", unitsPerBox: 1, desc: "Prebase mate sedosa que fija el maquillaje hasta 8 horas." },
+    { sku: "127845", name: "Rímel de volumen 3 en 1 Artistry Go Vibrant", en: "artistry go vibrant 3-in-1 volume mascara", category: "Belleza", size: "7.5 g / 0.26 oz", unitsPerBox: 1, desc: "Pestañas más gruesas y largas hasta por 10 horas." },
+    { sku: "123791", name: "Removedor + limpiador micelar Artistry Skin Nutrition", en: "artistry skin nutrition micellar makeup remover", category: "Belleza", size: "200 ml / 6.7 oz", unitsPerBox: 1, desc: "Desmaquillante micelar suave." },
+
+    // Cuidado personal - Satinique, g&h, Glister
+    { sku: "126452", name: "Champú Reparación intensiva Satinique", en: "satinique intensive repair shampoo", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Fortalece el cabello dañado y ayuda a mantener el color." },
+    { sku: "126454", name: "Acondicionador Reparación intensiva Satinique", en: "satinique intensive repair conditioner", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Acondicionador reparador para cabello dañado o teñido." },
+    { sku: "126449", name: "Champú Humectante suave Satinique", en: "satinique smooth moisture shampoo", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Suaviza e hidrata el cabello dejándolo brillante." },
+    { sku: "126455", name: "Champú y acondicionador 2 en 1 Satinique", en: "satinique 2-in-1 shampoo conditioner", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Limpia y acondiciona en un solo paso." },
+    { sku: "126457", name: "Champú Anticaída del cabello Satinique", en: "satinique anti-hairfall shampoo", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Fortalece y previene la pérdida de cabello por quiebre." },
+    { sku: "126463", name: "Champú Anticaspa Satinique", en: "satinique anti-dandruff shampoo", category: "Cuidado personal", size: "280 ml / 9.46 oz", unitsPerBox: 1, desc: "Limpia el cuero cabelludo y ayuda a prevenir la caspa." },
+    { sku: "125890", name: "Jabón corporal g&h Nourish (400 ml)", en: "g&h nourish body wash 400ml", category: "Cuidado personal", size: "400 ml / 13.5 oz", unitsPerBox: 1, desc: "Jabón corporal cremoso con aceite de chía blanca Nutrilite." },
+    { sku: "125914", name: "Jabón corporal g&h Nourish (1 L)", en: "g&h nourish body wash 1l", category: "Cuidado personal", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Jabón corporal cremoso tamaño familiar 1 L." },
+    { sku: "125891", name: "Loción para el cuerpo g&h Nourish", en: "g&h nourish body lotion", category: "Cuidado personal", size: "400 ml / 13.5 oz", unitsPerBox: 1, desc: "Loción corporal rica y duradera sin sensación pegajosa." },
+    { sku: "125902", name: "Crema para manos g&h Nourish", en: "g&h nourish hand cream", category: "Cuidado personal", size: "75 ml / 2.53 oz", unitsPerBox: 1, desc: "Alivia resequedad e hidrata manos ásperas." },
+    { sku: "125892", name: "Baño corporal exfoliante g&h Refresh", en: "g&h refresh exfoliating body wash", category: "Cuidado personal", size: "400 ml / 13.5 oz", unitsPerBox: 1, desc: "Exfolia e hidrata suavemente con acerola verde." },
+    { sku: "125893", name: "Loción corporal g&h Refresh", en: "g&h refresh body milk", category: "Cuidado personal", size: "400 ml / 13.5 oz", unitsPerBox: 1, desc: "Hidrata y refresca al instante con vitamina C de acerola." },
+    { sku: "127877", name: "Desodorante antitranspirante roll-on g&h Protect", en: "g&h protect roll-on deodorant", category: "Cuidado personal", size: "100 ml / 3.38 oz", unitsPerBox: 1, desc: "48 horas de protección contra olor y humedad." },
+    { sku: "321108", name: "Desodorante libre de aluminio g&h Protect", en: "g&h protect aluminum free deodorant", category: "Cuidado personal", size: "83.5 g / 2.95 oz", unitsPerBox: 1, desc: "Protección suave sin aluminio ni marcas blancas." },
+    { sku: "125897", name: "Barra de jabón g&h Protect (6 barras)", en: "g&h protect bar soap", category: "Cuidado personal", size: "6 barras de 150 g", unitsPerBox: 6, desc: "Elimina suciedad y grasa sin resecar la piel." },
+    { sku: "125894", name: "Jabón concentrado para manos g&h Protect", en: "g&h protect concentrated hand soap", category: "Cuidado personal", size: "250 ml / 8.45 oz", unitsPerBox: 1, desc: "Neutraliza olores y elimina bacterias en las manos." },
+    { sku: "126308", name: "Champú + Baño corporal g&h Baby", en: "g&h baby wash shampoo", category: "Cuidado personal", size: "400 ml / 13.5 oz", unitsPerBox: 1, desc: "Fórmula suave sin lágrimas ni fragancia para bebés." },
+    { sku: "124106", name: "Pasta dental de acción múltiple Glister (200 g)", en: "glister multi-action toothpaste 200g", category: "Cuidado personal", size: "Tubo de 200 g / 7.05 oz", unitsPerBox: 1, desc: "Limpia, ayuda a blanquear dientes y fortalece el esmalte." },
+    { sku: "126001", name: "Pasta dental Glister tamaño viaje (6 unidades)", en: "glister toothpaste travel size", category: "Cuidado personal", size: "6 tubos de 50 g", unitsPerBox: 6, desc: "Paquete de 6 pastas dentales tamaño viaje." },
+    { sku: "124108", name: "Enjuague bucal de acción múltiple Glister concentrado", en: "glister multi-action oral rinse", category: "Cuidado personal", size: "72 ml / 2.4 oz", unitsPerBox: 1, desc: "Fórmula concentrada sin alcohol con menta Nutrilite." },
+    { sku: "124111", name: "Refrescante bucal en spray Glister menta", en: "glister mint refresher spray", category: "Cuidado personal", size: "14 ml / 0.47 oz", unitsPerBox: 1, desc: "Spray refrescante instantáneo sin aerosol." },
+    { sku: "124112", name: "Hilo dental de acción múltiple Glister", en: "glister multi-action dental floss", category: "Cuidado personal", size: "Paquete de 2", unitsPerBox: 2, desc: "Cinta plana que elimina placa entre los dientes." },
+    { sku: "127705", name: "Cepillo de dientes eléctrico Glister", en: "glister multi-action electric toothbrush", category: "Cuidado personal", size: "1 cepillo + base UV + 3 cabezales", unitsPerBox: 1, desc: "5 modos de cepillado y desinfectante UV." },
+
+    // Hogar - Amway Home, Pursue, eSpring, Atmosphere, iCook
+    { sku: "E0001", name: "Limpiador multiusos L.O.C. de Amway Home", en: "amway home loc multi-purpose cleaner", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Limpiador concentrado biodegradable para más de 1,000 usos." },
+    { sku: "110485", name: "Toallitas multiusos L.O.C. de Amway Home", en: "amway home loc multi-purpose wipes", category: "Hogar", size: "96 toallitas (4 paq de 24)", unitsPerBox: 4, desc: "Toallitas prácticas para limpiar salpicaduras al instante." },
+    { sku: "112536", name: "Limpiador para la cocina Amway Home", en: "amway home kitchen cleaner", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Concentrado para desengrasar y limpiar superficies de cocina." },
+    { sku: "112546", name: "Limpiador para el baño Amway Home", en: "amway home bathroom cleaner", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Concentrado para restos de jabón y sarro en el baño." },
+    { sku: "112537", name: "Limpiador para vidrios Amway Home", en: "amway home glass cleaner", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Concentrado para ventanas y espejos sin rayas." },
+    { sku: "116798", name: "Botella rociadora Amway Home", en: "amway home spray bottle", category: "Hogar", size: "500 ml / 16.9 oz", unitsPerBox: 1, desc: "Botella rociadora vacía con medidas para diluir." },
+    { sku: "110488", name: "Líquido para vajilla Dish Drops de Amway Home", en: "amway home dish drops dishwashing liquid", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Lavaplatos concentrado que corta grasa y cuida las manos." },
+    { sku: "107890", name: "Botella recargable Dish Drops de Amway Home", en: "amway home dish drops squeeze bottle", category: "Hogar", size: "500 ml / 16.9 oz", unitsPerBox: 1, desc: "Botella dispensadora vacía para diluir Dish Drops." },
+    { sku: "109867", name: "Tabletas para lavavajillas automático Amway Home", en: "amway home automatic dish tablets", category: "Hogar", size: "60 tabletas", unitsPerBox: 60, desc: "Tabletas concentradas para máquina lavaplatos." },
+    { sku: "110490", name: "Almohadillas Scrub Buds de Amway Home", en: "amway home scrub buds", category: "Hogar", size: "4 almohadillas", unitsPerBox: 4, desc: "Esponjas de acero inoxidable que no rayan ollas." },
+    { sku: "E3878", name: "Limpiador desinfectante concentrado Pursue", en: "pursue disinfectant cleaner concentrate", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Desinfectante concentrado multiusos." },
+    { sku: "E0023", name: "Desodorante desinfectante en aerosol Pursue", en: "pursue disinfectant spray", category: "Hogar", size: "470 g / 1 lb", unitsPerBox: 1, desc: "Aerosol desinfectante y eliminador de olores." },
+    { sku: "110478", name: "Detergente líquido SA8 de Amway Home", en: "amway home sa8 liquid laundry detergent", category: "Hogar", size: "4 L / 135 oz", unitsPerBox: 1, desc: "Detergente líquido concentrado de disolución rápida." },
+    { sku: "109849", name: "Detergente en polvo SA8 de Amway Home", en: "amway home sa8 powder laundry detergent", category: "Hogar", size: "3 kg / 6.6 lb", unitsPerBox: 1, desc: "Detergente en polvo triple concentración para blancos y color." },
+    { sku: "124485", name: "Blanqueador para todo tipo de telas Amway Home", en: "amway home all fabric bleach", category: "Hogar", size: "1 kg / 2.2 lb", unitsPerBox: 1, desc: "Blanqueador activo de oxígeno sin cloro." },
+    { sku: "110480", name: "Suavizante de telas Amway Home", en: "amway home fabric softener", category: "Hogar", size: "1 L / 33.8 oz", unitsPerBox: 1, desc: "Restituye suavidad natural a prendas y toallas." },
+    { sku: "110403", name: "Rociador prelavado Amway Home", en: "amway home prewash spray", category: "Hogar", size: "350 g / 12.3 oz", unitsPerBox: 1, desc: "Quitamanchas en aerosol sin necesidad de frotar." },
+    { sku: "122940", name: "Purificador de agua eSpring LED UV-C (encima del mesón)", en: "espring water purifier uv-c", category: "Hogar", size: "1 purificador", unitsPerBox: 1, desc: "Elimina más de 170 contaminantes y 99.9999% de bacterias." },
+    { sku: "122943", name: "Cartucho reemplazo filtro de carbón eSpring e3", en: "espring e3 carbon filter cartridge", category: "Hogar", size: "1 filtro", unitsPerBox: 1, desc: "Filtro de carbón de reemplazo para eSpring." },
+    { sku: "120539", name: "Sistema de tratamiento de aire Atmosphere Sky", en: "atmosphere sky air purifier", category: "Hogar", size: "1 unidad", unitsPerBox: 1, desc: "Filtración de 3 niveles que captura 99.99% de partículas." },
+    { sku: "124746", name: "Sistema de tratamiento de aire Atmosphere Mini", en: "atmosphere mini air purifier", category: "Hogar", size: "1 unidad", unitsPerBox: 1, desc: "Purificador de aire compacto 3 en 1." },
+    { sku: "120231", name: "Colección iCook de 19 piezas", en: "icook 19 piece cookware set", category: "Hogar", size: "19 piezas", unitsPerBox: 1, desc: "Juego completo de ollas y sartenes de acero inoxidable." }
+  ];
+
+  // Imágenes reales de productos extraídas de products.rar
+  const AMWAY_CATALOG_IMAGES = {
+    // Nutrición - Nutrilite
+    "A4300": "products/p041_img145.png",
+    "A0244": "products/p041_img145.png",
+    "123364": "products/p041_img145.png",
+    "125557": "products/p022_img045.png",
+    "125559": "products/p022_img053.png",
+    "125561": "products/p022_img047.png",
+    "125562": "products/p022_img055.png",
+    "100648": "products/p023_img072.png",
+    "123377": "products/p023_img064.png",
+    "125921": "products/p025_img075.png",
+    "125923": "products/p025_img075.png",
+    "125925": "products/p025_img075.png",
+    "318668": "products/p025_img081.png",
+    "318669": "products/p025_img081.png",
+    "126132": "products/p067_img297.png",
+    "126136": "products/p067_img297.png",
+    "127725": "products/p030_img094.png",
+    "127444": "products/p030_img092.png",
+    "120571": "products/p030_img092.png",
+    "A8903": "products/p032_img111.png",
+    "308635": "products/p032_img109.png",
+    "128032": "products/p035_img121.png",
+    "127813": "products/p041_img145.png",
+    "A8084": "products/p041_img143.png",
+    "A4042": "products/p041_img141.png",
+    "110171": "products/p045_img166.png",
+    "123842": "products/p045_img163.png",
+    "125937": "products/p045_img161.png",
+    "127940": "products/p049_img180.png",
+    "124506": "products/p049_img178.png",
+    "308641": "products/p050_img188.png",
+    "125514": "products/p051_img196.png",
+    "308636": "products/p051_img200.png",
+    "119346": "products/p055_img217.png",
+    "124692": "products/p057_img234.png",
+    "A5986": "products/p057_img236.png",
+    "124555": "products/p057_img230.png",
+    "102735": "products/p057_img228.png",
+    "109745": "products/p057_img238.png",
+    "109747": "products/p057_img238.png",
+    "125936": "products/p057_img232.png",
+    "308642": "products/p062_img258.png",
+    "104664": "products/p062_img256.png",
+    "106964": "products/p062_img256.png",
+    "110610": "products/p063_img273.png",
+    "123362": "products/p063_img275.png",
+    "308639": "products/p065_img284.png",
+    "124708": "products/p065_img288.png",
+    "111106": "products/p065_img286.png",
+    "A5923": "products/p066_img294.png",
+    "A8601": "products/p066_img292.png",
+    "100070": "products/p067_img299.png",
+    "123367": "products/p067_img301.png",
+    "A8004": "products/p071_img315.png",
+    "308640": "products/p071_img323.png",
+    "123365": "products/p071_img319.png",
+    "126154": "products/p072_img337.png",
+    "126161": "products/p073_img340.png",
+    "102046": "products/p073_img342.png",
+    "123372": "products/p073_img346.png",
+    "125553": "products/p075_img363.png",
+    "124936": "products/p075_img367.png",
+    "A7553": "products/p075_img371.png",
+    "123043": "products/p076_img378.png",
+    "305554": "products/p077_img385.png",
+    "123046": "products/p077_img389.png",
+    "126185": "products/p077_img393.png",
+    "110922": "products/p082_img412.png",
+    "111045": "products/p082_img426.png",
+    "318670": "products/p081_img407.png",
+    "318671": "products/p081_img407.png",
+    "318672": "products/p081_img407.png",
+    "316302": "products/p081_img409.png",
+    "316303": "products/p081_img409.png",
+    "100280": "products/p085_img435.png",
+    "117085": "products/p085_img437.png",
+    "100193": "products/p085_img439.png",
+    "127620": "products/p085_img441.png",
+    // Energía & Deportes - XS
+    "266673": "products/p088_img446.png",
+    "127935": "products/p089_img448.png",
+    "127936": "products/p089_img450.png",
+    "126987": "products/p089_img452.png",
+    "126986": "products/p089_img455.png",
+    "101444": "products/p089_img459.png",
+    "126998": "products/p089_img459.png",
+    "126199": "products/p089_img462.png",
+    "126197": "products/p089_img464.png",
+    "126184": "products/p089_img462.png",
+    "127070": "products/p089_img462.png",
+    "101593": "products/p091_img473.png",
+    "126753": "products/p093_img477.png",
+    "126754": "products/p093_img479.png",
+    "110385": "products/p095_img487.png",
+    "110369": "products/p095_img491.png",
+    "128156": "products/p095_img495.png",
+    "128154": "products/p095_img499.png",
+    "127811": "products/p096_img504.png",
+    "316375": "products/p096_img506.png",
+    "128463": "products/p096_img508.png",
+    "316379": "products/p097_img510.png",
+    "300323": "products/p097_img516.png",
+    "110601": "products/p097_img520.png",
+    "305555": "products/p097_img524.png",
+    // Belleza - Artistry
+    "123792": "products/p109_img594.png",
+    "123794": "products/p109_img594.png",
+    "123797": "products/p123_img665.png",
+    "123793": "products/p109_img594.png",
+    "123795": "products/p109_img594.png",
+    "123798": "products/p123_img665.png",
+    "123781": "products/p109_img594.png",
+    "123783": "products/p109_img594.png",
+    "123785": "products/p123_img667.png",
+    "125575": "products/p123_img665.png",
+    "123786": "products/p123_img667.png",
+    "124823": "products/p123_img667.png",
+    "125517": "products/p135_img716.png",
+    "127019": "products/p135_img716.png",
+    "127020": "products/p135_img716.png",
+    "128047": "products/p135_img716.png",
+    "127571": "products/p135_img716.png",
+    "109709": "products/p135_img716.png",
+    "111228": "products/p146_img780.png",
+    "111225": "products/p146_img782.png",
+    "124811": "products/p148_img787.png",
+    "124812": "products/p148_img787.png",
+    "122339": "products/p155_img827.png",
+    "122340": "products/p155_img829.png",
+    "122342": "products/p155_img831.png",
+    "122343": "products/p155_img833.png",
+    "127831": "products/p162_img876.png",
+    "127845": "products/p162_img876.png",
+    "123791": "products/p109_img594.png",
+    // Cuidado personal & Hogar
+    "126457": "products/p176_img1066.png",
+    "126463": "products/p176_img1076.png",
+    "126455": "products/p177_img1080.png",
+    "126449": "products/p177_img1084.png",
+    "126452": "products/p177_img1092.png",
+    "126454": "products/p177_img1094.png",
+    "125890": "products/p180_img1124.png",
+    "125891": "products/p180_img1124.png",
+    "125902": "products/p180_img1124.png",
+    "125892": "products/p180_img1110.png",
+    "125893": "products/p180_img1110.png",
+    "125914": "products/p180_img1124.png",
+    "126308": "products/p180_img1132.png",
+    "125897": "products/p181_img1142.png",
+    "125894": "products/p181_img1146.png",
+    "127877": "products/p181_img1152.png",
+    "321108": "products/p181_img1152.png",
+    "127705": "products/p183_img1167.png",
+    "124106": "products/p184_img1175.png",
+    "126001": "products/p184_img1175.png",
+    "124108": "products/p184_img1179.png",
+    "124111": "products/p184_img1179.png",
+    "124112": "products/p184_img1179.png",
+    "122940": "products/p191_img1198.png",
+    "122943": "products/p191_img1214.png",
+    "120539": "products/p191_img1198.png",
+    "124746": "products/p191_img1198.png",
+    "120231": "products/p197_img1234.png",
+    "E0001": "products/p199_img1249.png",
+    "112537": "products/p199_img1245.png",
+    "107890": "products/p199_img1259.png",
+    "112546": "products/p199_img1241.png",
+    "112536": "products/p199_img1245.png",
+    "116798": "products/p199_img1247.png",
+    "110485": "products/p199_img1249.png",
+    "E3878": "products/p199_img1251.png",
+    "E0023": "products/p199_img1253.png",
+    "109867": "products/p199_img1255.png",
+    "110488": "products/p199_img1259.png",
+    "110490": "products/p199_img1261.png",
+    "109849": "products/p200_img1268.png",
+    "110478": "products/p200_img1270.png",
+    "110403": "products/p201_img1273.png",
+    "110480": "products/p201_img1275.png",
+    "124485": "products/p201_img1277.png"
+  };
+
+  function normalizeText(str) {
+    return (str || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function searchAmwayCatalog(query, limit = 6) {
+    const q = normalizeText(query);
+    if (!q) return [];
+    const tokens = q.split(" ").filter((t) => t.length >= 3 || t === "xs");
+    const scored = [];
+    for (const item of AMWAY_CATALOG) {
+      const skuNorm = normalizeText(item.sku);
+      const hay = normalizeText(`${item.sku} ${item.name} ${item.en} ${item.category} ${item.desc}`);
+      let score = 0;
+      if (skuNorm === q) score += 100;
+      else if (skuNorm.includes(q)) score += 60;
+      if (normalizeText(item.name).includes(q)) score += 45;
+      if (normalizeText(item.en).includes(q)) score += 40;
+      for (const t of tokens) {
+        if (skuNorm === t) score += 50;
+        else if (hay.includes(t)) score += t.length >= 5 ? 20 : 12;
+      }
+      if (score > 0) scored.push({ item, score });
+    }
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, limit).map((s) => s.item);
+  }
+
+  function generateAmwayProductBadge(item) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 420;
+    canvas.height = 420;
+    const ctx = canvas.getContext("2d");
+    const colors = {
+      "Nutrición": ["#0b6e4f", "#ecfdf5", "#065f46"],
+      "Energía": ["#c2410c", "#fff7ed", "#9a3412"],
+      "Belleza": ["#7e22ce", "#faf5ff", "#6b21a8"],
+      "Cuidado personal": ["#0369a1", "#f0f9ff", "#075985"],
+      "Hogar": ["#0f766e", "#f0fdfa", "#115e59"]
+    };
+    const [accent, bg, dark] = colors[item.category] || ["#0f4c5c", "#f1f5f9", "#0f172a"];
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 420, 420);
+    ctx.fillStyle = accent;
+    ctx.fillRect(0, 0, 420, 82);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 24px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("AMWAY", 28, 44);
+    ctx.font = "600 16px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(`${item.category.toUpperCase()}  ·  #${item.sku}`, 28, 68);
+
+    ctx.fillStyle = dark;
+    ctx.font = "bold 28px -apple-system, BlinkMacSystemFont, sans-serif";
+    const words = item.name.split(" ");
+    let line = "";
+    let y = 148;
+    for (const w of words) {
+      const test = line ? `${line} ${w}` : w;
+      if (ctx.measureText(test).width > 360) {
+        ctx.fillText(line, 28, y);
+        line = w;
+        y += 38;
+        if (y > 300) break;
+      } else {
+        line = test;
+      }
+    }
+    if (line && y <= 310) ctx.fillText(line, 28, y);
+
+    ctx.fillStyle = accent;
+    ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(item.size || "", 28, 375);
+
+    return canvas.toDataURL("image/png");
+  }
+
+  let tesseractLoadingPromise = null;
+  function loadTesseract() {
+    if (window.Tesseract) return Promise.resolve(window.Tesseract);
+    if (tesseractLoadingPromise) return tesseractLoadingPromise;
+    tesseractLoadingPromise = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+      s.async = true;
+      s.onload = () => (window.Tesseract ? resolve(window.Tesseract) : reject(new Error("OCR no disponible")));
+      s.onerror = () => reject(new Error("Sin conexión para OCR"));
+      document.head.appendChild(s);
+    });
+    return tesseractLoadingPromise;
+  }
+
+  async function identifyProductFromPhoto(dataUrl) {
+    const statusEl = $("amway-ocr-status");
+    const searchInput = $("amway-search-input");
+    statusEl.classList.remove("hidden");
+    statusEl.classList.add("scanning");
+    statusEl.textContent = "🔎 Leyendo etiqueta de la foto para buscar en Amway...";
+
+    try {
+      const Tesseract = await loadTesseract();
+      const result = await Tesseract.recognize(dataUrl, "eng+spa");
+      const rawText = (result?.data?.text || "").trim();
+      const matches = searchAmwayCatalog(rawText, 5);
+      statusEl.classList.remove("scanning");
+
+      if (matches.length > 0) {
+        const best = matches[0];
+        statusEl.textContent = `✅ Encontrado en Amway: ${best.name}`;
+        applyAmwayCatalogItem(best, true);
+        renderAmwaySuggestions(matches);
+      } else {
+        statusEl.textContent = "No se pudo leer el nombre exacto. Escríbelo abajo para buscar en Amway:";
+        if (rawText) {
+          const cleanHint = normalizeText(rawText).split(" ").filter((w) => w.length > 3).slice(0, 3).join(" ");
+          if (cleanHint && !searchInput.value) {
+            searchInput.value = cleanHint;
+            renderAmwaySuggestions(searchAmwayCatalog(cleanHint, 6));
+          }
+        }
+        searchInput.focus();
+      }
+    } catch {
+      statusEl.classList.remove("scanning");
+      statusEl.textContent = "Busca el nombre del producto abajo para rellenarlo desde Amway:";
+    }
+  }
+
+  let currentCameraPhotoData = "";
+
+  function getAmwayCatalogImage(item) {
+    if (item && item.sku && typeof AMWAY_CATALOG_IMAGES !== "undefined" && AMWAY_CATALOG_IMAGES[item.sku]) {
+      return AMWAY_CATALOG_IMAGES[item.sku];
+    }
+    return "";
+  }
+
+  function renderAmwaySuggestions(items) {
+    const box = $("amway-suggestions");
+    box.innerHTML = "";
+    if (!items || items.length === 0) {
+      box.classList.add("hidden");
+      return;
+    }
+    box.classList.remove("hidden");
+    for (const item of items) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "amway-suggestion-item";
+      const imgUrl = getAmwayCatalogImage(item);
+      const thumbHtml = imgUrl
+        ? `<img class="amway-suggestion-thumb" src="${escapeHtml(imgUrl)}" alt="" loading="lazy" />`
+        : `<span class="amway-suggestion-thumb" style="display:grid;place-items:center;font-size:1.2rem;">📦</span>`;
+      btn.innerHTML = `
+        ${thumbHtml}
+        <div class="amway-suggestion-text">
+          <strong>${escapeHtml(item.name)}</strong>
+          <span>#${escapeHtml(item.sku)} · ${escapeHtml(item.size)} · ${escapeHtml(item.category)}</span>
+        </div>
+      `;
+      btn.addEventListener("click", () => applyAmwayCatalogItem(item, false));
+      box.appendChild(btn);
+    }
+  }
+
+  function applyAmwayCatalogItem(item, fromOcr = false) {
+    lastMatchedAmwayItem = item;
+    $("prod-name").value = item.name;
+    $("prod-category").value = item.category || "Otro";
+    $("prod-details").value = `${item.size} — ${item.desc} (Art. #${item.sku})`;
+    $("prod-units-per-box").value = item.unitsPerBox || 1;
+    if ((item.unitsPerBox || 1) > 1 && !$("prod-id").value) {
+      $("prod-cost-mode").value = "box";
+    }
+    $("prod-save-to-catalog").checked = true;
+    $("amway-discard-photo-row").classList.remove("hidden");
+    const officialImg = getAmwayCatalogImage(item);
+    if ($("amway-discard-photo").checked || !currentPhotoData) {
+      setModalPhoto(officialImg || generateAmwayProductBadge(item));
+    }
+    if (!fromOcr) {
+      const statusEl = $("amway-ocr-status");
+      statusEl.classList.remove("hidden", "scanning");
+      statusEl.textContent = `✅ Seleccionado: ${item.name}`;
+      $("amway-suggestions").classList.add("hidden");
+    }
+    updateModalAutoCalc();
+    showToast("Datos de Amway rellenados");
+  }
+
+  let inventory = [];
+  let catalog = [];
+  let currentPhotoData = "";
+  let statusFilter = "all";
+  let toastTimer = null;
+
+  // Google Auth & Cloud state
+  let googleAccessToken = "";
+  let googleTokenClient = null;
+  let googleMeta = { folderId: "", spreadsheetId: "" };
+  let isSyncing = false;
+  let pendingSync = false;
+
+  const $ = (id) => document.getElementById(id);
+
+  const TAB_TITLES = {
+    hoy: "Hoy",
+    clientes: "Clientes",
+    puntos: "Puntos PV",
+    inventario: "Inventario",
+    prospectos: "Prospectos",
+    mensajes: "Mensajes"
+  };
+
+  function formatRD(value) {
+    const num = Number(value) || 0;
+    const hasDecimals = Math.round(num * 100) % 100 !== 0;
+    return (
+      "RD$ " +
+      num.toLocaleString("en-US", {
+        minimumFractionDigits: hasDecimals ? 2 : 0,
+        maximumFractionDigits: 2
+      })
+    );
+  }
+
+  function makeId(prefix = "id") {
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  }
+
+  function showToast(msg) {
+    const toast = $("toast");
+    toast.textContent = msg;
+    toast.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.add("hidden"), 2600);
+  }
+
+  function loadData() {
+    try {
+      inventory = JSON.parse(localStorage.getItem(STORAGE_INV) || "[]");
+      if (!Array.isArray(inventory)) inventory = [];
+    } catch {
+      inventory = [];
+    }
+    try {
+      catalog = JSON.parse(localStorage.getItem(STORAGE_CAT) || "[]");
+      if (!Array.isArray(catalog)) catalog = [];
+    } catch {
+      catalog = [];
+    }
+    try {
+      googleMeta = JSON.parse(localStorage.getItem(STORAGE_GMETA) || "{}");
+      if (!googleMeta || typeof googleMeta !== "object") googleMeta = {};
+    } catch {
+      googleMeta = {};
+    }
+    try {
+      userProfile = JSON.parse(localStorage.getItem(STORAGE_PROFILE) || "{}");
+      if (!userProfile || typeof userProfile !== "object") userProfile = {};
+    } catch {
+      userProfile = {};
+    }
+  }
+
+  let userProfile = {};
+
+  function saveProfile() {
+    localStorage.setItem(STORAGE_PROFILE, JSON.stringify(userProfile));
+    renderProfile();
+  }
+
+  function renderProfile() {
+    const cleanName = (userProfile.name || "").trim();
+    const titleText = cleanName ? `Centro de ${cleanName}` : "Centro";
+    $("header-title").textContent = titleText;
+    document.title = titleText;
+
+    const photo = userProfile.photo || "";
+    const hImg = $("header-avatar-img");
+    const hFallback = $("header-avatar-fallback");
+    const pImg = $("profile-preview-img");
+    const pFallback = $("profile-preview-fallback");
+    const removeBtn = $("btn-remove-profile-photo");
+
+    if (photo) {
+      hImg.src = photo;
+      hImg.classList.remove("hidden");
+      hFallback.classList.add("hidden");
+      pImg.src = photo;
+      pImg.classList.remove("hidden");
+      pFallback.classList.add("hidden");
+      removeBtn.classList.remove("hidden");
+    } else {
+      hImg.removeAttribute("src");
+      hImg.classList.add("hidden");
+      hFallback.classList.remove("hidden");
+      pImg.removeAttribute("src");
+      pImg.classList.add("hidden");
+      pFallback.classList.remove("hidden");
+      removeBtn.classList.add("hidden");
+    }
+
+    if ($("profile-name-input") && document.activeElement !== $("profile-name-input")) {
+      $("profile-name-input").value = userProfile.name || "";
+    }
+  }
+
+  function saveInventory(skipCloud = false) {
+    localStorage.setItem(STORAGE_INV, JSON.stringify(inventory));
+    if (!skipCloud && googleAccessToken) scheduleCloudSync();
+  }
+
+  function saveCatalog(skipCloud = false) {
+    localStorage.setItem(STORAGE_CAT, JSON.stringify(catalog));
+    if (!skipCloud && googleAccessToken) scheduleCloudSync();
+  }
+
+  // Math helpers
+  function getProductMath(p) {
+    const ibo = Number(p.iboPrice) || 0;
+    const customer = Number(p.customerPrice) || 0;
+    const special = Number(p.specialPrice) || 0;
+    const shipping = Number(p.shipping) || 0;
+    const tax = Number(p.tax) || 0;
+    const unitsPerBox = Math.max(1, parseInt(p.unitsPerBox, 10) || 1);
+    const totalUnits = Math.max(0, parseInt(p.totalUnits, 10) || 0);
+    const boxes = Math.floor(totalUnits / unitsPerBox);
+    const loose = totalUnits % unitsPerBox;
+
+    const totalCost = ibo + shipping + tax;
+    const profitNormal = customer - totalCost;
+    const profitSpecial = special > 0 ? special - totalCost : null;
+    const pv = Number(p.pv) || 0;
+
+    return {
+      ibo,
+      customer,
+      special,
+      shipping,
+      tax,
+      unitsPerBox,
+      totalUnits,
+      boxes,
+      loose,
+      totalCost,
+      profitNormal,
+      profitSpecial,
+      pv
+    };
+  }
+
+  function getStockStatus(totalUnits) {
+    if (totalUnits <= 0) return { key: "out", label: "Agotado", cls: "status-out" };
+    if (totalUnits <= 2) return { key: "low", label: "Quedan pocas", cls: "status-low" };
+    return { key: "ok", label: "En stock", cls: "status-ok" };
+  }
+
+  // Compress photo in browser so iPhone photos fit comfortably in localStorage
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("No se pudo leer la imagen"));
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("Imagen inválida"));
+        img.onload = () => {
+          const maxSide = 360;
+          let { width, height } = img;
+          if (width > height && width > maxSide) {
+            height = Math.round((height * maxSide) / width);
+            width = maxSide;
+          } else if (height >= width && height > maxSide) {
+            width = Math.round((width * maxSide) / height);
+            height = maxSide;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.72));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // High-res + contrast-boosted image for camera OCR
+  function prepareOcrImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("No se pudo leer la imagen"));
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("Imagen inválida"));
+        img.onload = () => {
+          const maxSide = 1400;
+          let { width, height } = img;
+          if (width > height && width > maxSide) {
+            height = Math.round((height * maxSide) / width);
+            width = maxSide;
+          } else if (height >= width && height > maxSide) {
+            width = Math.round((width * maxSide) / height);
+            height = maxSide;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.filter = "grayscale(1) contrast(1.45) brightness(1.05)";
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.9));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function setModalPhoto(dataUrl) {
+    currentPhotoData = dataUrl || "";
+    const img = $("photo-preview-img");
+    const placeholder = $("photo-preview-box").querySelector(".photo-placeholder");
+    const removeBtn = $("btn-remove-photo");
+    if (currentPhotoData) {
+      img.src = currentPhotoData;
+      img.classList.remove("hidden");
+      placeholder.classList.add("hidden");
+      removeBtn.classList.remove("hidden");
+    } else {
+      img.src = "";
+      img.classList.add("hidden");
+      placeholder.classList.remove("hidden");
+      removeBtn.classList.add("hidden");
+    }
+  }
+
+  // Render Top Summary
+  function renderSummary() {
+    let totalUnits = 0;
+    let totalCostVal = 0;
+    let totalSaleVal = 0;
+    let totalProfitVal = 0;
+    let totalPv = 0;
+    let lowCount = 0;
+
+    for (const p of inventory) {
+      const m = getProductMath(p);
+      totalUnits += m.totalUnits;
+      totalCostVal += m.totalCost * m.totalUnits;
+      totalSaleVal += m.customer * m.totalUnits;
+      totalProfitVal += m.profitNormal * m.totalUnits;
+      totalPv += (m.pv || 0) * m.totalUnits;
+      if (m.totalUnits <= 2) lowCount += 1;
+    }
+
+    $("sum-products").textContent = inventory.length;
+    $("sum-units").textContent = totalUnits;
+    $("sum-cost").textContent = formatRD(totalCostVal);
+    $("sum-sale").textContent = formatRD(totalSaleVal);
+    $("sum-profit").textContent = formatRD(totalProfitVal);
+    $("sum-pv").textContent = `${Math.round(totalPv * 100) / 100} PV`;
+    $("sum-low").textContent = lowCount;
+    $("catalog-count").textContent = catalog.length;
+  }
+
+  // Filter & Sort Inventory
+  function getVisibleInventory() {
+    const query = $("search-input").value.trim().toLowerCase();
+    const cat = $("category-filter").value;
+    const sortBy = $("sort-select").value;
+
+    const filtered = inventory.filter((p) => {
+      const m = getProductMath(p);
+      if (statusFilter === "low" && (m.totalUnits === 0 || m.totalUnits > 2)) return false;
+      if (statusFilter === "out" && m.totalUnits > 0) return false;
+      if (cat !== "all" && p.category !== cat) return false;
+      if (query) {
+        const hay = `${p.name} ${p.details || ""} ${p.category}`.toLowerCase();
+        if (!hay.includes(query)) return false;
+      }
+      return true;
+    });
+
+    filtered.sort((a, b) => {
+      const ma = getProductMath(a);
+      const mb = getProductMath(b);
+      if (sortBy === "units-asc") return ma.totalUnits - mb.totalUnits;
+      if (sortBy === "units-desc") return mb.totalUnits - ma.totalUnits;
+      if (sortBy === "profit-desc") return mb.profitNormal - ma.profitNormal;
+      return a.name.localeCompare(b.name, "es");
+    });
+
+    return filtered;
+  }
+
+  // Render Inventory List
+  function renderInventory() {
+    renderSummary();
+    const listEl = $("inventory-list");
+    const emptyEl = $("empty-state");
+    listEl.innerHTML = "";
+
+    if (inventory.length === 0) {
+      emptyEl.classList.remove("hidden");
+      return;
+    }
+    emptyEl.classList.add("hidden");
+
+    const visible = getVisibleInventory();
+    if (visible.length === 0) {
+      listEl.innerHTML = `<div class="empty-state"><p>No hay productos que coincidan con tu búsqueda o filtro.</p></div>`;
+      return;
+    }
+
+    for (const p of visible) {
+      const m = getProductMath(p);
+      const st = getStockStatus(m.totalUnits);
+
+      const card = document.createElement("article");
+      card.className = "product-card";
+      card.dataset.id = p.id;
+
+      const boxLabel =
+        m.unitsPerBox > 1
+          ? `${m.boxes} caja${m.boxes === 1 ? "" : "s"}` +
+            (m.loose > 0 ? ` + ${m.loose} u.` : "") +
+            ` (${m.unitsPerBox} u/caja)`
+          : `${m.totalUnits} unidad${m.totalUnits === 1 ? "" : "es"}`;
+
+      const specialLine =
+        m.special > 0
+          ? `<div class="metric-item">
+               <span class="metric-label">Precio especial</span>
+               <span class="metric-val text-special">${formatRD(m.special)} (gana ${formatRD(m.profitSpecial)})</span>
+             </div>`
+          : `<div class="metric-item">
+               <span class="metric-label">Puntos PV</span>
+               <span class="metric-val">${m.pv} PV / u.</span>
+             </div>`;
+
+      card.innerHTML = `
+        <div class="product-top">
+          <div class="product-thumb">
+            ${p.photo ? `<img src="${p.photo}" alt="${escapeHtml(p.name)}" />` : "📦"}
+          </div>
+          <div class="product-head-info">
+            <div class="product-title-row">
+              <h3 class="product-name">${escapeHtml(p.name)}</h3>
+              <span class="status-badge ${st.cls}">${st.label}</span>
+            </div>
+            <p class="product-meta">${escapeHtml(p.category)}${m.special > 0 && m.pv > 0 ? ` · ${m.pv} PV` : ""}</p>
+            ${p.details ? `<p class="product-details">${escapeHtml(p.details)}</p>` : ""}
+          </div>
+        </div>
+
+        <div class="product-metrics">
+          <div class="metric-item">
+            <span class="metric-label">Costo total (IBO + envío/imp.)</span>
+            <span class="metric-val">${formatRD(m.totalCost)}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Precio cliente</span>
+            <span class="metric-val">${formatRD(m.customer)}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Ganancia por unidad</span>
+            <span class="metric-val text-profit">${formatRD(m.profitNormal)}</span>
+          </div>
+          ${specialLine}
+        </div>
+
+        <div class="stock-bar">
+          <span>En casa: <strong>${m.totalUnits} u.</strong></span>
+          <span>${boxLabel}</span>
+        </div>
+
+        <div class="card-actions">
+          <button type="button" class="action-btn action-btn-sell" data-act="sell" data-id="${p.id}">
+            ✅ Vendido 1
+          </button>
+          <button type="button" class="action-btn action-btn-box" data-act="add-box" data-id="${p.id}">
+            +1 caja
+          </button>
+          <button type="button" class="action-btn" data-act="sub-unit" data-id="${p.id}">
+            -1 unidad
+          </button>
+        </div>
+
+        <div class="card-actions-secondary">
+          <button type="button" class="action-btn" data-act="edit" data-id="${p.id}">
+            ✏️ Editar
+          </button>
+          <button type="button" class="action-btn action-btn-danger" data-act="delete" data-id="${p.id}">
+            🗑️ Eliminar
+          </button>
+        </div>
+      `;
+
+      listEl.appendChild(card);
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Modal helpers
+  function openModal(id) {
+    $(id).classList.remove("hidden");
+  }
+
+  function closeModal(id) {
+    $(id).classList.add("hidden");
+  }
+
+  function getModalPerUnitCosts() {
+    const upb = Math.max(1, parseInt($("prod-units-per-box").value, 10) || 1);
+    const isBoxMode = upb > 1 && $("prod-cost-mode").value === "box";
+    const div = isBoxMode ? upb : 1;
+    const round2 = (n) => Math.round(n * 100) / 100;
+    const rawIbo = Number($("prod-ibo").value) || 0;
+    const rawShipping = Number($("prod-shipping").value) || 0;
+    const rawTax = Number($("prod-tax").value) || 0;
+    const rawPv = Number($("prod-pv").value) || 0;
+    return {
+      upb,
+      isBoxMode,
+      rawIbo,
+      rawPv,
+      ibo: round2(rawIbo / div),
+      shipping: round2(rawShipping / div),
+      tax: round2(rawTax / div),
+      pv: round2(rawPv / div)
+    };
+  }
+
+  function updateModalAutoCalc() {
+    const { upb, isBoxMode, rawIbo, rawPv, ibo, shipping, tax, pv } = getModalPerUnitCosts();
+    const customer = Number($("prod-customer").value) || 0;
+    const special = Number($("prod-special").value) || 0;
+
+    $("cost-mode-box").classList.toggle("hidden", upb <= 1);
+    if (isBoxMode) {
+      $("lbl-prod-pv").textContent = `Puntos PV de la caja (${upb} u.)`;
+      $("prod-pv-unit-hint").textContent = rawPv > 0 ? `= ${pv} PV por unidad` : "";
+      $("prod-pv-unit-hint").classList.toggle("hidden", rawPv <= 0);
+      $("lbl-prod-ibo").textContent = `Precio IBO de la caja (${upb} u.) *`;
+      $("lbl-prod-customer").textContent = "Precio Cliente por unidad (RD$) *";
+      $("lbl-prod-shipping").textContent = "Envío de la caja (RD$)";
+      $("lbl-prod-tax").textContent = "Impuesto / ITBIS de la caja";
+      $("prod-shipping-hint").textContent = `La app lo divide entre ${upb}`;
+      $("prod-tax-hint").textContent = `La app lo divide entre ${upb}`;
+      $("lbl-calc-total-cost").textContent = "Costo para ti (por unidad):";
+      $("prod-ibo-unit-hint").textContent = rawIbo > 0 ? `= ${formatRD(ibo)} por unidad` : "";
+      $("prod-ibo-unit-hint").classList.toggle("hidden", rawIbo <= 0);
+    } else {
+      $("lbl-prod-pv").textContent = "Puntos PV (por unidad)";
+      $("prod-pv-unit-hint").classList.add("hidden");
+      $("lbl-prod-ibo").textContent = upb > 1 ? "Precio IBO por unidad (RD$) *" : "Precio IBO (RD$) *";
+      $("lbl-prod-customer").textContent = upb > 1 ? "Precio Cliente por unidad (RD$) *" : "Precio Cliente (RD$) *";
+      $("lbl-prod-shipping").textContent = "Envío (RD$)";
+      $("lbl-prod-tax").textContent = "Impuesto / ITBIS";
+      $("prod-shipping-hint").textContent = "Pon lo que te cobró Amway";
+      $("prod-tax-hint").textContent = "Pon lo que te cobró Amway";
+      $("lbl-calc-total-cost").textContent = "Costo total para ti:";
+      $("prod-ibo-unit-hint").classList.add("hidden");
+    }
+
+    const totalCost = ibo + shipping + tax;
+    const profitNormal = customer - totalCost;
+    const profitSpecial = special - totalCost;
+
+    $("calc-total-cost").textContent = formatRD(totalCost);
+    $("calc-profit-normal").textContent = formatRD(profitNormal);
+
+    if (upb > 1 && customer > 0) {
+      $("calc-profit-box-row").classList.remove("hidden");
+      $("lbl-calc-profit-box").textContent = `Ganancia por caja (${upb} u.):`;
+      $("calc-profit-box").textContent = formatRD(profitNormal * upb);
+    } else {
+      $("calc-profit-box-row").classList.add("hidden");
+    }
+
+    if (special > 0) {
+      $("calc-profit-special-row").classList.remove("hidden");
+      $("calc-profit-special").textContent = formatRD(profitSpecial);
+    } else {
+      $("calc-profit-special-row").classList.add("hidden");
+    }
+
+    const boxes = Math.max(0, parseInt($("prod-boxes").value, 10) || 0);
+    const loose = Math.max(0, parseInt($("prod-loose").value, 10) || 0);
+    const total = boxes * upb + loose;
+    $("calc-total-units").textContent = `${total} unidad${total === 1 ? "" : "es"}`;
+  }
+
+  function populateCatalogPicker() {
+    const select = $("catalog-pick-select");
+    select.innerHTML = `<option value="">— Elegir producto guardado —</option>`;
+    for (const c of catalog) {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = `${c.name} (${formatRD(c.customerPrice)} · ${c.pv || 0} PV)`;
+      select.appendChild(opt);
+    }
+  }
+
+  let lastMatchedAmwayItem = null;
+
+  function openProductModal(product = null, preloadedPhoto = "", ocrPhoto = "") {
+    $("product-form").reset();
+    $("prod-id").value = "";
+    $("prod-shipping").value = "0";
+    $("prod-tax").value = "0";
+    $("prod-units-per-box").value = "1";
+    $("prod-boxes").value = "1";
+    $("prod-loose").value = "0";
+    $("prod-cost-mode").value = product ? "unit" : "box";
+    $("prod-save-to-catalog").checked = !product;
+    $("amway-search-input").value = "";
+    $("amway-ocr-status").classList.add("hidden");
+    $("amway-ocr-status").classList.remove("scanning");
+    $("amway-suggestions").innerHTML = "";
+    $("amway-suggestions").classList.add("hidden");
+    $("amway-discard-photo-row").classList.add("hidden");
+    $("amway-discard-photo").checked = true;
+    lastMatchedAmwayItem = null;
+    currentCameraPhotoData = preloadedPhoto || "";
+
+    populateCatalogPicker();
+    $("catalog-picker-box").classList.toggle("hidden", catalog.length === 0 || !!product);
+
+    if (product) {
+      const m = getProductMath(product);
+      $("modal-title").textContent = "Editar producto";
+      $("prod-id").value = product.id;
+      $("prod-name").value = product.name;
+      $("prod-category").value = product.category || "Otro";
+      $("prod-pv").value = m.pv || "";
+      $("prod-details").value = product.details || "";
+      $("prod-ibo").value = m.ibo;
+      $("prod-customer").value = m.customer;
+      $("prod-special").value = m.special > 0 ? m.special : "";
+      $("prod-shipping").value = m.shipping;
+      $("prod-tax").value = m.tax;
+      $("prod-units-per-box").value = m.unitsPerBox;
+      $("prod-boxes").value = m.boxes;
+      $("prod-loose").value = m.loose;
+      setModalPhoto(product.photo || "");
+    } else {
+      $("modal-title").textContent = preloadedPhoto ? "Confirmar producto de foto" : "Agregar producto";
+      setModalPhoto(preloadedPhoto);
+    }
+
+    updateModalAutoCalc();
+    openModal("product-modal");
+
+    if (!product && preloadedPhoto) {
+      identifyProductFromPhoto(ocrPhoto || preloadedPhoto);
+    }
+  }
+
+  // Catalog Modal
+  function renderCatalogList() {
+    const list = $("catalog-list");
+    list.innerHTML = "";
+    if (catalog.length === 0) {
+      list.innerHTML = `<p class="field-hint">Aún no has guardado productos en tu catálogo.</p>`;
+      return;
+    }
+    for (const c of catalog) {
+      const item = document.createElement("div");
+      item.className = "catalog-item";
+      item.innerHTML = `
+        <div class="catalog-item-info">
+          <strong>${escapeHtml(c.name)}</strong>
+          <span>IBO: ${formatRD(c.iboPrice)} · Cliente: ${formatRD(c.customerPrice)} · ${c.pv || 0} PV · ${c.unitsPerBox || 1} u/caja</span>
+        </div>
+        <button type="button" class="action-btn action-btn-danger" data-cat-del="${c.id}">🗑️</button>
+      `;
+      list.appendChild(item);
+    }
+  }
+
+  // Event Listeners
+  function bindEvents() {
+    // Bottom navigation tabs
+    document.querySelectorAll(".nav-item").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        $(`tab-${tab}`).classList.add("active");
+        $("header-title").textContent = TAB_TITLES[tab] || "Inventario";
+      });
+    });
+
+    // Modal close buttons & backdrops
+    document.querySelectorAll("[data-close]").forEach((el) => {
+      el.addEventListener("click", () => closeModal(el.dataset.close));
+    });
+
+    // Add manual
+    $("btn-add-manual").addEventListener("click", () => openProductModal(null, ""));
+
+    // Add by photo (camera)
+    $("btn-add-photo").addEventListener("click", () => {
+      $("quick-camera-input").value = "";
+      $("quick-camera-input").click();
+    });
+
+    $("quick-camera-input").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const [dataUrl, ocrUrl] = await Promise.all([
+          compressImage(file),
+          prepareOcrImage(file).catch(() => "")
+        ]);
+        openProductModal(null, dataUrl, ocrUrl || dataUrl);
+      } catch {
+        showToast("No se pudo procesar la foto");
+      }
+    });
+
+    // Photo inside product modal
+    $("prod-photo-input").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const dataUrl = await compressImage(file);
+        currentCameraPhotoData = dataUrl;
+        setModalPhoto(dataUrl);
+        identifyProductFromPhoto(dataUrl);
+      } catch {
+        showToast("No se pudo cargar la foto");
+      }
+    });
+
+    $("btn-remove-photo").addEventListener("click", () => {
+      currentCameraPhotoData = "";
+      setModalPhoto("");
+    });
+
+    // Amway catalog search input & discard-photo toggle
+    $("amway-search-input").addEventListener("input", (e) => {
+      const q = e.target.value.trim();
+      if (!q) {
+        $("amway-suggestions").innerHTML = "";
+        $("amway-suggestions").classList.add("hidden");
+        return;
+      }
+      renderAmwaySuggestions(searchAmwayCatalog(q, 8));
+    });
+
+    $("amway-discard-photo").addEventListener("change", (e) => {
+      if (e.target.checked && lastMatchedAmwayItem) {
+        setModalPhoto(generateAmwayProductBadge(lastMatchedAmwayItem));
+      } else if (!e.target.checked && currentCameraPhotoData) {
+        setModalPhoto(currentCameraPhotoData);
+      }
+    });
+
+    // Live auto-calc inside product form
+    [
+      "prod-pv",
+      "prod-ibo",
+      "prod-customer",
+      "prod-special",
+      "prod-shipping",
+      "prod-tax",
+      "prod-units-per-box",
+      "prod-boxes",
+      "prod-loose"
+    ].forEach((id) => {
+      $(id).addEventListener("input", updateModalAutoCalc);
+    });
+
+    $("prod-cost-mode").addEventListener("change", () => {
+      const upb = Math.max(1, parseInt($("prod-units-per-box").value, 10) || 1);
+      if (upb > 1) {
+        const toBox = $("prod-cost-mode").value === "box";
+        const factor = toBox ? upb : 1 / upb;
+        const round2 = (n) => Math.round(n * 100) / 100;
+        ["prod-pv", "prod-ibo", "prod-shipping", "prod-tax"].forEach((id) => {
+          const val = Number($(id).value);
+          if (val > 0) $(id).value = round2(val * factor);
+        });
+      }
+      updateModalAutoCalc();
+    });
+
+    // Pick from Catálogo Amway DR
+    $("catalog-pick-select").addEventListener("change", (e) => {
+      const catItem = catalog.find((c) => c.id === e.target.value);
+      if (!catItem) return;
+      $("prod-cost-mode").value = "unit";
+      $("prod-name").value = catItem.name;
+      $("prod-category").value = catItem.category || "Otro";
+      if (catItem.details) $("prod-details").value = catItem.details;
+      $("prod-pv").value = catItem.pv || 0;
+      $("prod-ibo").value = catItem.iboPrice;
+      $("prod-customer").value = catItem.customerPrice;
+      $("prod-shipping").value = catItem.shipping || 0;
+      $("prod-tax").value = catItem.tax || 0;
+      $("prod-units-per-box").value = catItem.unitsPerBox || 1;
+      if (catItem.photo && !currentPhotoData) setModalPhoto(catItem.photo);
+      updateModalAutoCalc();
+      showToast("Datos rellenados desde el catálogo");
+    });
+
+    // Submit Product Form
+    $("product-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = $("prod-id").value;
+      const { upb: unitsPerBox, ibo, shipping, tax, pv } = getModalPerUnitCosts();
+      const boxes = Math.max(0, parseInt($("prod-boxes").value, 10) || 0);
+      const loose = Math.max(0, parseInt($("prod-loose").value, 10) || 0);
+
+      const productData = {
+        id: id || makeId("prod"),
+        name: $("prod-name").value.trim(),
+        category: $("prod-category").value,
+        details: $("prod-details").value.trim(),
+        photo: currentPhotoData,
+        iboPrice: ibo,
+        customerPrice: Number($("prod-customer").value) || 0,
+        specialPrice: Number($("prod-special").value) || 0,
+        shipping,
+        tax,
+        pv,
+        unitsPerBox,
+        totalUnits: boxes * unitsPerBox + loose,
+        isExample: false,
+        updatedAt: new Date().toISOString()
+      };
+
+      if (id) {
+        const idx = inventory.findIndex((p) => p.id === id);
+        if (idx !== -1) {
+          productData.isExample = !!inventory[idx].isExample;
+          if (productData.photo && productData.photo === inventory[idx].photo) {
+            productData.photoDriveId = inventory[idx].photoDriveId || "";
+            productData.photoUrl = inventory[idx].photoUrl || "";
+          }
+          inventory[idx] = productData;
+        }
+        showToast("Producto actualizado");
+      } else {
+        inventory.unshift(productData);
+        showToast("Producto agregado al inventario");
+      }
+
+      if ($("prod-save-to-catalog").checked) {
+        const catEntry = {
+          id: makeId("cat"),
+          name: productData.name,
+          category: productData.category,
+          details: productData.details || "",
+          iboPrice: productData.iboPrice,
+          customerPrice: productData.customerPrice,
+          pv: productData.pv,
+          unitsPerBox: productData.unitsPerBox,
+          shipping: productData.shipping,
+          tax: productData.tax,
+          photo: productData.photo || ""
+        };
+        const existingCatIdx = catalog.findIndex(
+          (c) => normalizeText(c.name) === normalizeText(productData.name)
+        );
+        if (existingCatIdx !== -1) {
+          catEntry.id = catalog[existingCatIdx].id;
+          catalog[existingCatIdx] = catEntry;
+        } else {
+          catalog.unshift(catEntry);
+        }
+        saveCatalog();
+      }
+
+      saveInventory();
+      closeModal("product-modal");
+      renderInventory();
+    });
+
+    // Card quick actions (delegation)
+    $("inventory-list").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-act]");
+      if (!btn) return;
+      const act = btn.dataset.act;
+      const id = btn.dataset.id;
+      const idx = inventory.findIndex((p) => p.id === id);
+      if (idx === -1) return;
+      const prod = inventory[idx];
+      const m = getProductMath(prod);
+
+      if (act === "edit") {
+        openProductModal(prod);
+      } else if (act === "delete") {
+        if (confirm(`¿Eliminar "${prod.name}" del inventario?`)) {
+          inventory.splice(idx, 1);
+          saveInventory();
+          renderInventory();
+          showToast("Producto eliminado");
+        }
+      } else if (act === "add-box") {
+        prod.totalUnits = m.totalUnits + m.unitsPerBox;
+        saveInventory();
+        renderInventory();
+        showToast(`+1 caja (${m.unitsPerBox} u.) agregada`);
+      } else if (act === "sub-unit") {
+        if (m.totalUnits <= 0) {
+          showToast("Ya está en 0 unidades");
+          return;
+        }
+        prod.totalUnits = m.totalUnits - 1;
+        saveInventory();
+        renderInventory();
+        showToast("-1 unidad");
+      } else if (act === "sell") {
+        if (m.totalUnits <= 0) {
+          showToast("No hay unidades para vender");
+          return;
+        }
+        prod.totalUnits = m.totalUnits - 1;
+        saveInventory();
+        renderInventory();
+        showToast(`Vendido 1 · Ganancia ${formatRD(m.profitNormal)}`);
+      }
+    });
+
+    // Search, filter, sort
+    $("search-input").addEventListener("input", renderInventory);
+    $("category-filter").addEventListener("change", renderInventory);
+    $("sort-select").addEventListener("change", renderInventory);
+
+    $("status-filters").addEventListener("click", (e) => {
+      const pill = e.target.closest(".pill");
+      if (!pill) return;
+      statusFilter = pill.dataset.filter;
+      document.querySelectorAll("#status-filters .pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      renderInventory();
+    });
+
+    $("btn-filter-low-stock").addEventListener("click", () => {
+      statusFilter = "low";
+      document.querySelectorAll("#status-filters .pill").forEach((p) => {
+        p.classList.toggle("active", p.dataset.filter === "low");
+      });
+      renderInventory();
+    });
+
+    // Catalog Modal
+    $("btn-open-catalog").addEventListener("click", () => {
+      renderCatalogList();
+      openModal("catalog-modal");
+    });
+
+    $("catalog-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      catalog.unshift({
+        id: makeId("cat"),
+        name: $("cat-name").value.trim(),
+        category: $("cat-category").value,
+        pv: Number($("cat-pv").value) || 0,
+        iboPrice: Number($("cat-ibo").value) || 0,
+        customerPrice: Number($("cat-customer").value) || 0,
+        unitsPerBox: Math.max(1, parseInt($("cat-units").value, 10) || 1),
+        shipping: Number($("cat-shipping").value) || 0,
+        tax: Number($("cat-tax").value) || 0
+      });
+      saveCatalog();
+      $("catalog-form").reset();
+      $("cat-units").value = "1";
+      $("cat-shipping").value = "0";
+      $("cat-tax").value = "0";
+      renderCatalogList();
+      renderSummary();
+      showToast("Guardado en Mis Productos");
+    });
+
+    $("catalog-list").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-cat-del]");
+      if (!btn) return;
+      catalog = catalog.filter((c) => c.id !== btn.dataset.catDel);
+      saveCatalog();
+      renderCatalogList();
+      renderSummary();
+    });
+
+    // Tools Modal & Profile
+    $("btn-open-tools").addEventListener("click", () => {
+      renderProfile();
+      openModal("tools-modal");
+    });
+    $("btn-header-profile").addEventListener("click", () => {
+      renderProfile();
+      openModal("tools-modal");
+      setTimeout(() => $("profile-name-input")?.focus(), 120);
+    });
+    $("profile-name-input").addEventListener("input", (e) => {
+      userProfile.name = e.target.value;
+      saveProfile();
+    });
+    $("profile-photo-input").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        userProfile.photo = await compressImage(file);
+        saveProfile();
+        showToast("Foto de perfil actualizada");
+      } catch {
+        showToast("No se pudo cargar la foto");
+      }
+      e.target.value = "";
+    });
+    $("btn-remove-profile-photo").addEventListener("click", () => {
+      userProfile.photo = "";
+      saveProfile();
+      showToast("Foto de perfil quitada");
+    });
+
+
+
+    $("btn-export-data").addEventListener("click", () => {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        inventory,
+        catalog
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `inventario-amway-rd-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Archivo exportado");
+    });
+
+    $("import-file-input").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (Array.isArray(parsed)) {
+            inventory = parsed;
+          } else {
+            if (Array.isArray(parsed.inventory)) inventory = parsed.inventory;
+            if (Array.isArray(parsed.catalog)) catalog = parsed.catalog;
+          }
+          saveInventory();
+          saveCatalog();
+          renderInventory();
+          closeModal("tools-modal");
+          showToast("Inventario importado correctamente");
+        } catch {
+          showToast("El archivo no es válido");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+  }
+
+  // --- GOOGLE CLOUD SYNC (OAuth + Drive + Sheets) ---
+  function getGoogleClientId() {
+    return (localStorage.getItem(STORAGE_GCLIENT) || DEFAULT_GOOGLE_CLIENT_ID || "").trim();
+  }
+
+  function updateGoogleUI(state, subText = "") {
+    const dot = $("google-status-dot");
+    const title = $("google-status-title");
+    const sub = $("google-status-sub");
+    const btnIn = $("btn-google-signin");
+    const btnInModal = $("btn-google-signin-modal");
+    const btnSync = $("btn-google-sync-now");
+    const btnOut = $("btn-google-signout");
+
+    dot.classList.remove("dot-offline", "dot-online", "dot-syncing");
+    if (state === "online") {
+      dot.classList.add("dot-online");
+      title.textContent = "Conectado";
+      sub.textContent = subText || "Sincronizado en la nube";
+      btnIn.classList.add("hidden");
+      if (btnInModal) btnInModal.classList.add("hidden");
+      btnSync.classList.remove("hidden");
+    } else if (state === "syncing") {
+      dot.classList.add("dot-syncing");
+      title.textContent = "Sincronizando...";
+      sub.textContent = subText || "Guardando productos y fotos";
+      btnIn.classList.add("hidden");
+      if (btnInModal) btnInModal.classList.add("hidden");
+      btnSync.classList.remove("hidden");
+    } else {
+      dot.classList.add("dot-offline");
+      title.textContent = "Desconectado";
+      sub.textContent = subText || "Conecta tu cuenta Google para guardar en la nube";
+      btnIn.classList.remove("hidden");
+      if (btnInModal) btnInModal.classList.remove("hidden");
+      btnSync.classList.add("hidden");
+    }
+  }
+
+  async function gFetch(url, options = {}) {
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${googleAccessToken}`,
+        ...(options.headers || {})
+      }
+    });
+    if (res.status === 401) {
+      googleAccessToken = "";
+      updateGoogleUI("offline", "Sesión expirada — vuelve a entrar con Google");
+      throw new Error("Sesión de Google expirada");
+    }
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Google API error ${res.status}: ${errText}`);
+    }
+    return res.json();
+  }
+
+  async function ensureGoogleWorkspace() {
+    if (!googleMeta.folderId) {
+      const q = encodeURIComponent(
+        "name='Amway RD - Mi Negocio' and mimeType='application/vnd.google-apps.folder' and trashed=false"
+      );
+      const found = await gFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`);
+      if (found.files && found.files.length > 0) {
+        googleMeta.folderId = found.files[0].id;
+      } else {
+        const created = await gFetch("https://www.googleapis.com/drive/v3/files", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Amway RD - Mi Negocio",
+            mimeType: "application/vnd.google-apps.folder"
+          })
+        });
+        googleMeta.folderId = created.id;
+      }
+    }
+
+    if (!googleMeta.spreadsheetId) {
+      const q = encodeURIComponent(
+        "name='Inventario Amway RD' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false"
+      );
+      const found = await gFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`);
+      if (found.files && found.files.length > 0) {
+        googleMeta.spreadsheetId = found.files[0].id;
+      } else {
+        const created = await gFetch("https://www.googleapis.com/drive/v3/files", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Inventario Amway RD",
+            mimeType: "application/vnd.google-apps.spreadsheet",
+            parents: [googleMeta.folderId]
+          })
+        });
+        googleMeta.spreadsheetId = created.id;
+
+        // Add Inventario & Catalogo tabs
+        await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}:batchUpdate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requests: [
+              { updateSheetProperties: { properties: { sheetId: 0, title: "Inventario" }, fields: "title" } },
+              { addSheet: { properties: { title: "Catalogo" } } }
+            ]
+          })
+        });
+      }
+    }
+
+    localStorage.setItem(STORAGE_GMETA, JSON.stringify(googleMeta));
+  }
+
+  async function uploadPhotoToDrive(dataUrl, productName) {
+    const base64Data = dataUrl.split(",")[1];
+    const byteChars = atob(base64Data);
+    const byteArray = new Uint8Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) {
+      byteArray[i] = byteChars.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+    const metadata = {
+      name: `${productName.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 30)}_${Date.now()}.jpg`,
+      parents: [googleMeta.folderId]
+    };
+
+    const form = new FormData();
+    form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+    form.append("file", blob);
+
+    const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${googleAccessToken}` },
+      body: form
+    });
+    if (!res.ok) throw new Error("Error subiendo foto a Drive");
+    const uploaded = await res.json();
+
+    // Make image viewable via link so it loads inside the web app
+    await gFetch(`https://www.googleapis.com/drive/v3/files/${uploaded.id}/permissions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: "reader", type: "anyone" })
+    });
+
+    return {
+      photoDriveId: uploaded.id,
+      photoUrl: `https://drive.google.com/thumbnail?id=${uploaded.id}&sz=w600`
+    };
+  }
+
+  async function pushToGoogleSheets() {
+    // Upload any new local dataURL photos to Google Drive first
+    let photoUpdated = false;
+    for (const p of inventory) {
+      if (p.photo && p.photo.startsWith("data:image/") && !p.photoDriveId) {
+        const uploaded = await uploadPhotoToDrive(p.photo, p.name || "producto");
+        p.photoDriveId = uploaded.photoDriveId;
+        p.photoUrl = uploaded.photoUrl;
+        photoUpdated = true;
+      }
+    }
+    if (photoUpdated) saveInventory(true);
+
+    const invHeader = [
+      "ID",
+      "Nombre",
+      "Categoria",
+      "Detalles",
+      "Precio IBO",
+      "Precio Cliente",
+      "Precio Especial",
+      "Envio",
+      "Impuesto",
+      "PV",
+      "Unidades/Caja",
+      "Total Unidades",
+      "Foto Drive URL",
+      "Foto Drive ID",
+      "Es Ejemplo"
+    ];
+    const invRows = inventory.map((p) => [
+      p.id,
+      p.name,
+      p.category,
+      p.details || "",
+      p.iboPrice || 0,
+      p.customerPrice || 0,
+      p.specialPrice || 0,
+      p.shipping || 0,
+      p.tax || 0,
+      p.pv || 0,
+      p.unitsPerBox || 1,
+      p.totalUnits || 0,
+      p.photoUrl || (p.photo && p.photo.startsWith("products/") ? p.photo : ""),
+      p.photoDriveId || "",
+      p.isExample ? "SI" : "NO"
+    ]);
+
+    const catHeader = ["ID", "Nombre", "Categoria", "PV", "Precio IBO", "Precio Cliente", "Unidades/Caja", "Envio", "Impuesto", "Detalles"];
+    const catRows = catalog.map((c) => [
+      c.id,
+      c.name,
+      c.category || "Otro",
+      c.pv || 0,
+      c.iboPrice || 0,
+      c.customerPrice || 0,
+      c.unitsPerBox || 1,
+      c.shipping || 0,
+      c.tax || 0,
+      c.details || ""
+    ]);
+
+    await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Inventario!A1:Z1000:clear`, {
+      method: "POST"
+    });
+    await gFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Inventario!A1?valueInputOption=USER_ENTERED`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ values: [invHeader, ...invRows] })
+      }
+    );
+
+    await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Catalogo!A1:Z500:clear`, {
+      method: "POST"
+    });
+    await gFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Catalogo!A1?valueInputOption=USER_ENTERED`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ values: [catHeader, ...catRows] })
+      }
+    );
+  }
+
+  async function pullFromGoogleSheetsIfLocalEmpty() {
+    const invRes = await gFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Inventario!A2:O1000`
+    );
+    const catRes = await gFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${googleMeta.spreadsheetId}/values/Catalogo!A2:J500`
+    );
+
+    const remoteInv = (invRes.values || []).map((r) => ({
+      id: r[0] || makeId("prod"),
+      name: r[1] || "",
+      category: r[2] || "Otro",
+      details: r[3] || "",
+      iboPrice: Number(r[4]) || 0,
+      customerPrice: Number(r[5]) || 0,
+      specialPrice: Number(r[6]) || 0,
+      shipping: Number(r[7]) || 0,
+      tax: Number(r[8]) || 0,
+      pv: Number(r[9]) || 0,
+      unitsPerBox: Math.max(1, parseInt(r[10], 10) || 1),
+      totalUnits: Math.max(0, parseInt(r[11], 10) || 0),
+      photoUrl: r[12] || "",
+      photoDriveId: r[13] || "",
+      photo: r[12] || "",
+      isExample: r[14] === "SI"
+    }));
+
+    const remoteCat = (catRes.values || []).map((r) => ({
+      id: r[0] || makeId("cat"),
+      name: r[1] || "",
+      category: r[2] || "Otro",
+      pv: Number(r[3]) || 0,
+      iboPrice: Number(r[4]) || 0,
+      customerPrice: Number(r[5]) || 0,
+      unitsPerBox: Math.max(1, parseInt(r[6], 10) || 1),
+      shipping: Number(r[7]) || 0,
+      tax: Number(r[8]) || 0,
+      details: r[9] || ""
+    }));
+
+    if (inventory.length === 0 && remoteInv.length > 0) {
+      inventory = remoteInv;
+      saveInventory(true);
+    }
+    if (catalog.length === 0 && remoteCat.length > 0) {
+      catalog = remoteCat;
+      saveCatalog(true);
+    }
+  }
+
+  async function syncWithGoogle(isInitial = false) {
+    if (!googleAccessToken) return;
+    if (isSyncing) {
+      pendingSync = true;
+      return;
+    }
+    isSyncing = true;
+    updateGoogleUI("syncing");
+    try {
+      await ensureGoogleWorkspace();
+      if (isInitial) {
+        await pullFromGoogleSheetsIfLocalEmpty();
+        renderInventory();
+      }
+      await pushToGoogleSheets();
+      const nowStr = new Date().toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit" });
+      updateGoogleUI("online", `Última copia: ${nowStr}`);
+    } catch (err) {
+      console.error(err);
+      updateGoogleUI("offline", "Error al sincronizar — guardado local seguro");
+      showToast("No se pudo sincronizar con Google");
+    } finally {
+      isSyncing = false;
+      if (pendingSync) {
+        pendingSync = false;
+        syncWithGoogle(false);
+      }
+    }
+  }
+
+  function scheduleCloudSync() {
+    clearTimeout(scheduleCloudSync._t);
+    scheduleCloudSync._t = setTimeout(() => syncWithGoogle(false), 700);
+  }
+
+  function showWelcomeStep(step) {
+    const screen = $("welcome-screen");
+    const shell = $("app-shell");
+    const stepGoogle = $("welcome-step-google");
+    const stepName = $("welcome-step-name");
+    if (step === "done") {
+      screen.classList.add("hidden");
+      shell.classList.remove("hidden");
+      renderProfile();
+      return;
+    }
+    shell.classList.add("hidden");
+    screen.classList.remove("hidden");
+    if (step === "name") {
+      stepGoogle.classList.add("hidden");
+      stepName.classList.remove("hidden");
+      if (userProfile.photo) {
+        $("welcome-avatar-img").src = userProfile.photo;
+        $("welcome-avatar-img").classList.remove("hidden");
+        $("welcome-avatar-fallback").classList.add("hidden");
+      }
+      if (userProfile.name) $("welcome-name-input").value = userProfile.name;
+      setTimeout(() => $("welcome-name-input")?.focus(), 80);
+    } else {
+      stepName.classList.add("hidden");
+      stepGoogle.classList.remove("hidden");
+    }
+  }
+
+  function startGoogleSignIn() {
+    const clientId = getGoogleClientId();
+    if (!clientId) {
+      showToast("La conexión con Google aún no está activada en esta app");
+      return;
+    }
+    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+      showToast("Cargando Google... intenta en 2 segundos (requiere https)");
+      return;
+    }
+    googleTokenClient = window.google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: GOOGLE_SCOPES,
+      callback: (resp) => {
+        if (resp.error) {
+          showToast("No se inició sesión con Google");
+          return;
+        }
+        googleAccessToken = resp.access_token;
+        showToast("Conectado a Google");
+        closeModal("tools-modal");
+        if (!$("welcome-screen").classList.contains("hidden")) {
+          if ((userProfile.name || "").trim()) {
+            localStorage.setItem(STORAGE_AUTH, "active");
+            showWelcomeStep("done");
+          } else {
+            showWelcomeStep("name");
+          }
+        }
+        syncWithGoogle(true);
+      }
+    });
+    googleTokenClient.requestAccessToken({ prompt: "select_account" });
+  }
+
+  // Init
+  loadData();
+  renderProfile();
+  bindEvents();
+  $("btn-welcome-google").addEventListener("click", startGoogleSignIn);
+  $("btn-welcome-skip").addEventListener("click", () => {
+    if ((userProfile.name || "").trim()) {
+      showWelcomeStep("done");
+    } else {
+      showWelcomeStep("name");
+    }
+  });
+  $("welcome-photo-input").addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      userProfile.photo = await compressImage(file);
+      saveProfile();
+      $("welcome-avatar-img").src = userProfile.photo;
+      $("welcome-avatar-img").classList.remove("hidden");
+      $("welcome-avatar-fallback").classList.add("hidden");
+    } catch {
+      showToast("No se pudo cargar la foto");
+    }
+    e.target.value = "";
+  });
+  $("welcome-name-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("welcome-name-input").value.trim();
+    if (!name) return;
+    userProfile.name = name;
+    saveProfile();
+    localStorage.setItem(STORAGE_AUTH, "active");
+    showWelcomeStep("done");
+  });
+
+  $("btn-google-signin").addEventListener("click", startGoogleSignIn);
+  $("btn-google-signin-modal").addEventListener("click", startGoogleSignIn);
+  $("btn-google-sync-now").addEventListener("click", () => syncWithGoogle(false));
+  $("btn-google-signout").addEventListener("click", () => {
+    if (googleAccessToken && window.google?.accounts?.oauth2) {
+      window.google.accounts.oauth2.revoke(googleAccessToken);
+    }
+    googleAccessToken = "";
+    localStorage.removeItem(STORAGE_AUTH);
+    updateGoogleUI("offline");
+    closeModal("tools-modal");
+    showToast("Sesión cerrada");
+    showWelcomeStep("google");
+  });
+  async function playCentroIntroSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return false;
+      const ctx = new AudioCtx();
+      if (ctx.state === "suspended") {
+        await ctx.resume().catch(() => {});
+      }
+      if (ctx.state !== "running") return false;
+
+      const now = ctx.currentTime;
+
+      // 1. Subtle futuristic whoosh sweep
+      const bufSize = Math.floor(ctx.sampleRate * 0.6);
+      const noiseBuf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(220, now);
+      filter.frequency.exponentialRampToValueAtTime(1800, now + 0.45);
+      filter.Q.value = 2.2;
+      const nGain = ctx.createGain();
+      nGain.gain.setValueAtTime(0.001, now);
+      nGain.gain.exponentialRampToValueAtTime(0.14, now + 0.18);
+      nGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.58);
+      noise.connect(filter);
+      filter.connect(nGain);
+      nGain.connect(ctx.destination);
+      noise.start(now);
+
+      // 2. Deep warm bass + rising harmonic chord
+      const bass = ctx.createOscillator();
+      const bassGain = ctx.createGain();
+      bass.type = "sine";
+      bass.frequency.setValueAtTime(130.81, now + 0.08);
+      bassGain.gain.setValueAtTime(0.0001, now + 0.08);
+      bassGain.gain.exponentialRampToValueAtTime(0.22, now + 0.2);
+      bassGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+      bass.connect(bassGain);
+      bassGain.connect(ctx.destination);
+      bass.start(now + 0.08);
+      bass.stop(now + 1.55);
+
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const t = now + 0.22 + i * 0.11;
+        osc.type = i === 0 ? "triangle" : "sine";
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.2 / (i * 0.25 + 1), t + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 1.3);
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function runIntroSplash() {
+    const splash = $("splash-screen");
+    const hint = $("splash-sound-hint");
+    if (!splash) return;
+    const played = await playCentroIntroSound();
+    if (!played) {
+      if (hint) hint.classList.remove("hidden");
+      const unlockSound = async () => {
+        if (hint) hint.classList.add("hidden");
+        await playCentroIntroSound();
+        document.removeEventListener("touchstart", unlockSound);
+        document.removeEventListener("click", unlockSound);
+      };
+      document.addEventListener("touchstart", unlockSound, { once: true, passive: true });
+      document.addEventListener("click", unlockSound, { once: true });
+    }
+    setTimeout(() => {
+      splash.classList.add("splash-hide");
+      setTimeout(() => splash.classList.add("hidden"), 550);
+    }, 3800);
+  }
+
+  renderInventory();
+  if (localStorage.getItem(STORAGE_AUTH) === "active" && (userProfile.name || "").trim()) {
+    $("splash-screen").classList.add("hidden");
+    showWelcomeStep("done");
+  } else {
+    showWelcomeStep("google");
+    runIntroSplash();
+  }
+})();
+
+</script>
+</body>
+</html>
