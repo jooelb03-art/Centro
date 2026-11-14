@@ -2204,7 +2204,10 @@ input[type="number"] {
           </div>
         </div>
 
-        <div class="summary-details-row">
+        <div class="summary-details-row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <button type="button" id="btn-go-earnings-banner" class="btn-details-link hidden" style="background:var(--profit-soft);border-color:#86efac;color:var(--profit);">
+            💰 Ganado este mes: <span id="sum-earned-month">RD$ 0</span> →
+          </button>
           <button type="button" id="btn-open-summary-details" class="btn-details-link">
             Ver más detalles (unidades, costo, puntos) →
           </button>
@@ -2411,7 +2414,7 @@ input[type="number"] {
         <div id="sales-empty-state" class="empty-state hidden">
           <div class="empty-icon">💰</div>
           <h3>Aún no has registrado ventas</h3>
-          <p>Cuando toques <strong>✅ Vendido 1</strong> en cualquier producto o uses <strong>+ Registrar venta</strong>, aquí verás tus ganancias mes por mes.</p>
+          <p>Cuando toques <strong>✅ Vendido</strong> en cualquier producto o uses <strong>+ Registrar venta</strong>, aquí verás tus ganancias mes por mes.</p>
         </div>
       </section>
     </main>
@@ -4277,6 +4280,20 @@ input[type="number"] {
       lowBanner.classList.toggle("hidden", lowCount === 0);
       if ($("sum-low-banner")) $("sum-low-banner").textContent = lowCount;
     }
+
+    const nowYm = new Date().toISOString().slice(0, 7);
+    const earnedMonth = sales
+      .filter((s) => ((s.date || "").slice(0, 7) || nowYm) === nowYm)
+      .reduce((acc, s) => acc + (Number(s.profit) || 0), 0);
+    const earnedBtn = $("btn-go-earnings-banner");
+    if (earnedBtn) {
+      earnedBtn.classList.toggle("hidden", earnedMonth <= 0);
+      if ($("sum-earned-month")) $("sum-earned-month").textContent = `+${formatRD(earnedMonth)}`;
+    }
+    const earnTab = document.querySelector('.view-tab-btn[data-view="ganancias"]');
+    if (earnTab) {
+      earnTab.textContent = earnedMonth > 0 ? `💰 Ganancias (+${formatRD(earnedMonth)})` : "💰 Ganancias";
+    }
   }
 
   // Filter & Sort Inventory
@@ -4379,7 +4396,7 @@ input[type="number"] {
 
         <div class="card-actions">
           <button type="button" class="action-btn action-btn-sell" data-act="sell" data-id="${p.id}">
-            ✅ Vendido 1
+            ✅ Vendido
           </button>
           <button type="button" class="action-btn action-btn-box" data-act="add-box" data-id="${p.id}">
             ${boxBtnLabel}
@@ -4609,6 +4626,10 @@ input[type="number"] {
 
     // Open Summary Details modal
     $("btn-open-summary-details").addEventListener("click", () => openModal("summary-details-modal"));
+
+    $("btn-go-earnings-banner").addEventListener("click", () => {
+      document.querySelector('.view-tab-btn[data-view="ganancias"]')?.click();
+    });
 
     // Toggle search filters drawer
     $("btn-toggle-filters").addEventListener("click", () => {
@@ -4856,7 +4877,7 @@ input[type="number"] {
         saveInventory();
         renderInventory();
         renderEarnings();
-        showToast(`Vendido 1 · Ganancia +${formatRD(earned)}`);
+        showToast(`Vendido · Ganancia +${formatRD(earned)}`);
       }
     });
 
