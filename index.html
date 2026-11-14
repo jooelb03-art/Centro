@@ -2222,7 +2222,7 @@ input[type="search"]:focus {
           📦 Inventario
         </button>
         <button type="button" class="view-tab-btn" data-view="ganancias" role="tab" aria-selected="false">
-          💰 Ganancias
+          🎯 Meta de puntos
         </button>
       </div>
 
@@ -2238,15 +2238,12 @@ input[type="search"]:focus {
             <strong class="summary-value" id="sum-sale">RD$ 0</strong>
           </div>
           <div class="summary-card summary-card-profit">
-            <span class="summary-label">Ganancia de hoy (24h)</span>
-            <strong class="summary-value" id="sum-profit">RD$ 0</strong>
+            <span class="summary-label">Puntos en inventario</span>
+            <strong class="summary-value" id="sum-profit">0 pts</strong>
           </div>
         </div>
 
-        <div class="summary-details-row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
-          <button type="button" id="btn-go-earnings-banner" class="btn-details-link hidden" style="background:var(--profit-soft);border-color:#86efac;color:var(--profit);">
-            💰 Ganado este mes: <span id="sum-earned-month">RD$ 0</span> →
-          </button>
+        <div class="summary-details-row">
           <button type="button" id="btn-open-summary-details" class="btn-details-link">
             Ver más detalles (unidades, costo, puntos) →
           </button>
@@ -2321,23 +2318,8 @@ input[type="search"]:focus {
         </div>
       </section>
 
-      <!-- TAB: GANANCIAS Y VENTAS POR MES -->
+      <!-- TAB: META DE PUNTOS Y CALENDARIO -->
       <section id="tab-ganancias" class="tab-panel">
-        <div class="summary-grid-3" aria-label="Resumen de ganancias">
-          <div class="summary-card summary-card-profit">
-            <span class="summary-label">Ganancia este mes</span>
-            <strong class="summary-value" id="earn-month-profit">RD$ 0</strong>
-          </div>
-          <div class="summary-card">
-            <span class="summary-label">Vendido este mes</span>
-            <strong class="summary-value" id="earn-month-sales">RD$ 0</strong>
-          </div>
-          <div class="summary-card">
-            <span class="summary-label">Unidades vendidas</span>
-            <strong class="summary-value" id="earn-month-units">0</strong>
-          </div>
-        </div>
-
         <!-- Meta de Puntos -->
         <div class="goal-card" aria-label="Meta de puntos">
           <div class="goal-card-head">
@@ -2439,28 +2421,6 @@ input[type="search"]:focus {
           </div>
           <div id="purchase-calendar" class="cal-grid"></div>
           <div id="cal-day-purchases" style="margin-top:12px;"></div>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;">
-          <h3 style="margin:0;font-size:1.1rem;">Ganancias por mes</h3>
-          <button type="button" id="btn-open-sale-modal" class="btn btn-primary btn-sm">
-            ＋ Registrar venta
-          </button>
-        </div>
-
-        <div id="months-list" class="month-cards-list"></div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h3 id="sales-history-title" style="margin:0;font-size:1.05rem;">Ventas registradas</h3>
-          <button type="button" id="btn-show-all-months" class="btn-details-link hidden">Ver todos los meses</button>
-        </div>
-
-        <div id="sales-history-list" class="inventory-list"></div>
-
-        <div id="sales-empty-state" class="empty-state hidden">
-          <div class="empty-icon">💰</div>
-          <h3>Aún no has registrado ventas</h3>
-          <p>Cuando toques <strong>✅ Vendido</strong> en cualquier producto o uses <strong>+ Registrar venta</strong>, aquí verás tus ganancias mes por mes.</p>
         </div>
       </section>
     </main>
@@ -3726,6 +3686,11 @@ input[type="search"]:focus {
       }
     }
 
+    if (!$("months-list")) {
+      renderPointsGoal();
+      return;
+    }
+
     $("earn-month-profit").textContent = formatRD(curProfit);
     $("earn-month-sales").textContent = formatRD(curSales);
     $("earn-month-units").textContent = curUnits;
@@ -4418,22 +4383,11 @@ input[type="search"]:focus {
       if (m.totalUnits <= minStock) lowCount += 1;
     }
 
-    const nowMs = Date.now();
-    const dayMs = 24 * 60 * 60 * 1000;
-    const todayProfit24h = Math.round(
-      sales
-        .filter((s) => {
-          const t = new Date(s.date).getTime();
-          return Number.isFinite(t) && nowMs - t >= 0 && nowMs - t <= dayMs;
-        })
-        .reduce((acc, s) => acc + (Number(s.profit) || 0), 0) * 100
-    ) / 100;
-
     $("sum-products").textContent = inventory.length;
     $("sum-units").textContent = totalUnits;
     $("sum-cost").textContent = formatRD(totalCostVal);
     $("sum-sale").textContent = formatRD(totalSaleVal);
-    $("sum-profit").textContent = formatRD(todayProfit24h);
+    $("sum-profit").textContent = `${Math.round(totalPv * 100) / 100} pts`;
     $("sum-pv").textContent = `${Math.round(totalPv * 100) / 100} pts`;
     $("sum-low").textContent = lowCount;
     $("catalog-count").textContent = catalog.length;
@@ -4444,18 +4398,9 @@ input[type="search"]:focus {
       if ($("sum-low-banner")) $("sum-low-banner").textContent = lowCount;
     }
 
-    const nowYm = new Date().toISOString().slice(0, 7);
-    const earnedMonth = sales
-      .filter((s) => ((s.date || "").slice(0, 7) || nowYm) === nowYm)
-      .reduce((acc, s) => acc + (Number(s.profit) || 0), 0);
-    const earnedBtn = $("btn-go-earnings-banner");
-    if (earnedBtn) {
-      earnedBtn.classList.toggle("hidden", earnedMonth <= 0);
-      if ($("sum-earned-month")) $("sum-earned-month").textContent = `+${formatRD(earnedMonth)}`;
-    }
     const earnTab = document.querySelector('.view-tab-btn[data-view="ganancias"]');
     if (earnTab) {
-      earnTab.textContent = earnedMonth > 0 ? `💰 Ganancias (+${formatRD(earnedMonth)})` : "💰 Ganancias";
+      earnTab.textContent = "🎯 Meta de puntos";
     }
   }
 
@@ -4788,7 +4733,7 @@ input[type="search"]:focus {
     // Open Summary Details modal
     $("btn-open-summary-details").addEventListener("click", () => openModal("summary-details-modal"));
 
-    $("btn-go-earnings-banner").addEventListener("click", () => {
+    $("btn-go-earnings-banner")?.addEventListener("click", () => {
       document.querySelector('.view-tab-btn[data-view="ganancias"]')?.click();
     });
 
@@ -5243,7 +5188,7 @@ input[type="search"]:focus {
     });
 
     // Earnings & Sale Modal listeners
-    $("btn-open-sale-modal").addEventListener("click", openSaleModal);
+    $("btn-open-sale-modal")?.addEventListener("click", openSaleModal);
 
     $("sale-product-select").addEventListener("change", () => {
       const prod = inventory.find((p) => p.id === $("sale-product-select").value);
@@ -5275,19 +5220,19 @@ input[type="search"]:focus {
       showToast(`Venta registrada · Ganancia +${formatRD(earned)}`);
     });
 
-    $("months-list").addEventListener("click", (e) => {
+    $("months-list")?.addEventListener("click", (e) => {
       const card = e.target.closest("[data-month]");
       if (!card) return;
       selectedMonthFilter = selectedMonthFilter === card.dataset.month ? "" : card.dataset.month;
       renderEarnings();
     });
 
-    $("btn-show-all-months").addEventListener("click", () => {
+    $("btn-show-all-months")?.addEventListener("click", () => {
       selectedMonthFilter = "";
       renderEarnings();
     });
 
-    $("sales-history-list").addEventListener("click", (e) => {
+    $("sales-history-list")?.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-sale-del]");
       if (!btn) return;
       const idx = sales.findIndex((s) => s.id === btn.dataset.saleDel);
