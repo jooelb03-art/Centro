@@ -1132,7 +1132,7 @@ input[type="number"] {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: radial-gradient(circle at 50% 42%, rgba(16, 185, 129, 0.18) 0%, #0b0f10 62%);
+  background: radial-gradient(circle at 50% 42%, rgba(16, 185, 129, 0.22) 0%, #0b0f10 62%), #0b0f10;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -5869,7 +5869,10 @@ input[type="number"] {
       if (!AudioCtx) return false;
       const ctx = new AudioCtx();
       if (ctx.state === "suspended") {
-        await ctx.resume().catch(() => {});
+        await Promise.race([
+          ctx.resume().catch(() => {}),
+          new Promise((r) => setTimeout(r, 250))
+        ]);
       }
       if (ctx.state !== "running") return false;
 
@@ -5934,6 +5937,10 @@ input[type="number"] {
     const splash = $("splash-screen");
     const hint = $("splash-sound-hint");
     if (!splash) return;
+    setTimeout(() => {
+      splash.classList.add("splash-hide");
+      setTimeout(() => splash.classList.add("hidden"), 550);
+    }, 3800);
     const played = await playCentroIntroSound();
     if (!played) {
       if (hint) hint.classList.remove("hidden");
@@ -5946,10 +5953,6 @@ input[type="number"] {
       document.addEventListener("touchstart", unlockSound, { once: true, passive: true });
       document.addEventListener("click", unlockSound, { once: true });
     }
-    setTimeout(() => {
-      splash.classList.add("splash-hide");
-      setTimeout(() => splash.classList.add("hidden"), 550);
-    }, 3800);
   }
 
   if ((userProfile.name || "").trim()) {
