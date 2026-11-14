@@ -2238,7 +2238,7 @@ input[type="search"]:focus {
             <strong class="summary-value" id="sum-sale">RD$ 0</strong>
           </div>
           <div class="summary-card summary-card-profit">
-            <span class="summary-label">Ganancia si vendes todo</span>
+            <span class="summary-label">Ganancia de hoy (24h)</span>
             <strong class="summary-value" id="sum-profit">RD$ 0</strong>
           </div>
         </div>
@@ -2681,11 +2681,6 @@ input[type="search"]:focus {
                 <label for="prod-tax" id="lbl-prod-tax">ITBIS / Impuesto</label>
                 <input type="number" id="prod-tax" min="0" step="0.01" value="0" />
               </div>
-            </div>
-
-            <div class="form-group">
-              <label for="prod-date">Fecha</label>
-              <input type="date" id="prod-date" />
             </div>
 
             <div class="auto-calc-box">
@@ -4423,11 +4418,22 @@ input[type="search"]:focus {
       if (m.totalUnits <= minStock) lowCount += 1;
     }
 
+    const nowMs = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const todayProfit24h = Math.round(
+      sales
+        .filter((s) => {
+          const t = new Date(s.date).getTime();
+          return Number.isFinite(t) && nowMs - t >= 0 && nowMs - t <= dayMs;
+        })
+        .reduce((acc, s) => acc + (Number(s.profit) || 0), 0) * 100
+    ) / 100;
+
     $("sum-products").textContent = inventory.length;
     $("sum-units").textContent = totalUnits;
     $("sum-cost").textContent = formatRD(totalCostVal);
     $("sum-sale").textContent = formatRD(totalSaleVal);
-    $("sum-profit").textContent = formatRD(totalProfitVal);
+    $("sum-profit").textContent = formatRD(todayProfit24h);
     $("sum-pv").textContent = `${Math.round(totalPv * 100) / 100} pts`;
     $("sum-low").textContent = lowCount;
     $("catalog-count").textContent = catalog.length;
@@ -4697,7 +4703,6 @@ input[type="search"]:focus {
     $("prod-boxes").value = "0";
     $("prod-loose").value = "1";
     $("prod-min-stock").value = "2";
-    $("prod-date").value = new Date().toISOString().slice(0, 10);
     $("prod-cost-mode").value = product ? "unit" : "box";
     $("prod-save-to-catalog").checked = !product;
     if ($("prod-advanced-box")) $("prod-advanced-box").open = false;
@@ -4731,7 +4736,6 @@ input[type="search"]:focus {
       $("prod-boxes").value = m.boxes;
       $("prod-loose").value = m.loose;
       $("prod-min-stock").value = Number.isFinite(Number(product.minStock)) ? product.minStock : 2;
-      if (product.date) $("prod-date").value = product.date;
       setModalPhoto(product.photo || "");
     } else {
       $("modal-title").textContent = "Agregar producto";
@@ -4938,7 +4942,7 @@ input[type="search"]:focus {
         unitsPerBox,
         totalUnits: boxes * unitsPerBox + loose,
         minStock: Math.max(0, parseInt($("prod-min-stock").value, 10) || 2),
-        date: $("prod-date").value || new Date().toISOString().slice(0, 10),
+        date: (id ? inventory.find((p) => p.id === id)?.date : "") || new Date().toISOString().slice(0, 10),
         isExample: false,
         updatedAt: new Date().toISOString()
       };
@@ -5031,6 +5035,25 @@ input[type="search"]:focus {
         }
         prod.totalUnits = m.totalUnits - 1;
         const earned = recordSale(prod, 1, m.customer);
+        if (prod.totalUnits <= 0) {
+          if (!catalog.some((c) => normalizeText(c.name) === normalizeText(prod.name))) {
+            catalog.unshift({
+              id: makeId("cat"),
+              name: prod.name,
+              category: prod.category || "Otro",
+              pv: m.pv || 0,
+              iboPrice: m.ibo || 0,
+              customerPrice: m.customer || 0,
+              unitsPerBox: m.unitsPerBox || 1,
+              shipping: m.shipping || 0,
+              tax: m.tax || 0,
+              details: prod.details || "",
+              photo: prod.photo || ""
+            });
+            saveCatalog();
+          }
+          inventory = inventory.filter((p) => p.id !== prod.id);
+        }
         saveInventory();
         renderInventory();
         renderEarnings();
