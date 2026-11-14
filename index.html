@@ -3937,7 +3937,7 @@ input[type="search"]:focus {
 
     const resultBox = $("goal-calc-result");
     const savedMap = new Map();
-    products.forEach((p) => {
+    inventory.forEach((p) => {
       const m = getProductMath(p);
       if (m.pv > 0) {
         savedMap.set((p.name || "").trim().toLowerCase(), {
@@ -3950,7 +3950,7 @@ input[type="search"]:focus {
         });
       }
     });
-    customCatalog.forEach((c) => {
+    catalog.forEach((c) => {
       const key = (c.name || "").trim().toLowerCase();
       if (!savedMap.has(key) && Number(c.pv) > 0) {
         const m = getProductMath(c);
