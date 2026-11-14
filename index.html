@@ -3854,11 +3854,13 @@ input[type="number"] {
   function renderPointsGoal() {
     populateGoalProductSelect();
     const nowYm = new Date().toISOString().slice(0, 7);
-    const currentPts = Math.round(
-      sales
-        .filter((s) => ((s.date || "").slice(0, 7) || nowYm) === nowYm)
-        .reduce((acc, s) => acc + (Number(s.pv) || 0), 0) * 100
-    ) / 100;
+    const confirmedPurchasesPts = purchases
+      .filter((p) => p.status === "confirmed" && ((p.date || "").slice(0, 7) || nowYm) === nowYm)
+      .reduce((acc, p) => acc + (Number(p.totalPts) || 0), 0);
+    const salesPts = sales
+      .filter((s) => ((s.date || "").slice(0, 7) || nowYm) === nowYm)
+      .reduce((acc, s) => acc + (Number(s.pv) || 0), 0);
+    const currentPts = Math.round((confirmedPurchasesPts > 0 ? confirmedPurchasesPts : salesPts) * 100) / 100;
 
     const savedGoal = localStorage.getItem(STORAGE_GOAL) || "";
     if (savedGoal && document.activeElement !== $("goal-points-input")) {
@@ -3873,7 +3875,7 @@ input[type="number"] {
     $("goal-progress-fill").style.width = `${pct}%`;
 
     if (goal <= 0) {
-      $("goal-progress-text").textContent = "Pon tu meta arriba para calcular cuántos productos necesitas vender.";
+      $("goal-progress-text").textContent = "Pon tu meta arriba para calcular cuántos puntos te faltan.";
     } else if (remaining <= 0) {
       $("goal-progress-text").textContent = `🎉 ¡Felicidades! Ya superaste tu meta de ${goal} puntos este mes.`;
     } else {
@@ -3881,30 +3883,93 @@ input[type="number"] {
     }
 
     const resultBox = $("goal-calc-result");
-    const allProds = getGoalSourceProducts();
-    const chosen = allProds.find((p) => p.id === $("goal-product-select").value);
-    const pvPerUnit = Math.max(0, Number($("goal-prod-pv").value) || 0);
+    const savedMap = new Map();
+    products.forEach((p) => {
+      const m = getProductMath(p);
+      if (m.pv > 0) {
+        savedMap.set((p.name || "").trim().toLowerCase(), {
+          name: p.name,
+          pv: m.pv,
+          costPerUnit: m.costPerUnit,
+          profitNormal: m.profitNormal,
+          unitsPerBox: m.unitsPerBox,
+          totalUnits: m.totalUnits
+        });
+      }
+    });
+    customCatalog.forEach((c) => {
+      const key = (c.name || "").trim().toLowerCase();
+      if (!savedMap.has(key) && Number(c.pv) > 0) {
+        const m = getProductMath(c);
+        if (m.pv > 0) {
+          savedMap.set(key, {
+            name: c.name,
+            pv: m.pv,
+            costPerUnit: m.costPerUnit,
+            profitNormal: m.profitNormal,
+            unitsPerBox: m.unitsPerBox,
+            totalUnits: 0
+          });
+        }
+      }
+    });
+    const savedProds = Array.from(savedMap.values()).sort((a, b) => b.pv - a.pv);
+    const savedSumPts = Math.round(savedProds.reduce((acc, p) => acc + p.pv, 0) * 100) / 100;
+    const stockPts = Math.round(savedProds.reduce((acc, p) => acc + p.pv * (p.totalUnits || 0), 0) * 100) / 100;
 
-    if (goal > 0 && remaining > 0 && chosen && pvPerUnit > 0) {
-      const m = getProductMath(chosen);
-      const unitsNeeded = Math.ceil(remaining / pvPerUnit);
-      const boxesText = m.unitsPerBox > 1
-        ? ` (${Math.ceil((unitsNeeded / m.unitsPerBox) * 10) / 10} caja${unitsNeeded > m.unitsPerBox ? "s" : ""} de ${m.unitsPerBox} u.)`
-        : "";
-      const estProfit = m.profitNormal * unitsNeeded;
-      const estSales = m.customer * unitsNeeded;
+    if (savedProds.length === 0) {
+      if (goal > 0 && remaining > 0) {
+        resultBox.classList.remove("hidden");
+        resultBox.innerHTML = `<span>Guarda productos con puntos en tu inventario o en <strong>Mis Productos</strong> para sumar sus puntos y darte una recomendación.</span>`;
+      } else {
+        resultBox.classList.add("hidden");
+      }
+    } else if (goal > 0 && remaining <= 0) {
+      resultBox.classList.add("hidden");
+    } else if (goal <= 0) {
+      resultBox.classList.remove("hidden");
+      resultBox.innerHTML = `
+        <strong>Tus ${savedProds.length} producto${savedProds.length === 1 ? "" : "s"} guardado${savedProds.length === 1 ? "" : "s"} suman ${savedSumPts} pts (1 u. c/u)</strong>
+        ${stockPts > 0 ? `<span>En tu inventario actual tienes ${stockPts} pts en stock.</span>` : ""}
+        <span>Pon tu meta arriba para recomendarte cómo combinar tus productos.</span>
+      `;
+    } else {
+      const pool = savedProds.slice(0, 4).map((p) => ({ ...p, recUnits: 0 }));
+      let accPts = 0;
+      let guard = 0;
+      while (accPts + 0.001 < remaining && guard < 500) {
+        let addedAny = false;
+        for (let i = 0; i < pool.length && accPts + 0.001 < remaining; i++) {
+          pool[i].recUnits += 1;
+          accPts = Math.round((accPts + pool[i].pv) * 100) / 100;
+          addedAny = true;
+        }
+        if (!addedAny) break;
+        guard++;
+      }
+      const chosenMix = pool.filter((p) => p.recUnits > 0);
+      const recTotalCost = Math.round(chosenMix.reduce((a, p) => a + p.recUnits * p.costPerUnit, 0) * 100) / 100;
+      const recTotalProfit = Math.round(chosenMix.reduce((a, p) => a + p.recUnits * p.profitNormal, 0) * 100) / 100;
+      const mixHtml = chosenMix
+        .map((p) => {
+          const pts = Math.round(p.recUnits * p.pv * 100) / 100;
+          const boxTxt = p.unitsPerBox > 1 && p.recUnits >= p.unitsPerBox
+            ? ` (${Math.round((p.recUnits / p.unitsPerBox) * 10) / 10} caja${p.recUnits > p.unitsPerBox ? "s" : ""})`
+            : "";
+          return `<div>• <strong>${p.recUnits} u.${boxTxt}</strong> de ${escapeHtml(p.name)} — ${pts} pts</div>`;
+        })
+        .join("");
 
       resultBox.classList.remove("hidden");
       resultBox.innerHTML = `
-        <strong>Para completar tu meta te faltan ${unitsNeeded} unidad${unitsNeeded === 1 ? "" : "es"}${boxesText}</strong>
-        <span>De "${escapeHtml(chosen.name)}" (${pvPerUnit} pts c/u)</span>
-        ${estSales > 0 ? `<span>Venta total: ${formatRD(estSales)} · Ganancia estimada: <strong style="display:inline;font-size:0.95rem;color:var(--profit);">${formatRD(estProfit)}</strong></span>` : ""}
+        <strong>Tus ${savedProds.length} producto${savedProds.length === 1 ? "" : "s"} guardado${savedProds.length === 1 ? "" : "s"} suman ${savedSumPts} pts (1 u. c/u)</strong>
+        ${stockPts > 0 ? `<span>En tu inventario actual tienes ${stockPts} pts en stock.</span>` : ""}
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);">
+          <div style="font-weight:700;color:var(--primary-dark);margin-bottom:4px;">💡 Recomendación para completar los ${remaining} pts que te faltan:</div>
+          <div style="display:grid;gap:3px;font-size:0.86rem;">${mixHtml}</div>
+          <div style="margin-top:6px;font-size:0.85rem;">Total recomendado: <strong>${accPts} pts</strong>${recTotalCost > 0 ? ` · Costo aprox: ${formatRD(recTotalCost)}` : ""}${recTotalProfit > 0 ? ` · Ganancia est.: <strong style="display:inline;font-size:0.88rem;color:var(--profit);">${formatRD(recTotalProfit)}</strong>` : ""}</div>
+        </div>
       `;
-    } else if (goal > 0 && remaining > 0 && chosen && pvPerUnit <= 0) {
-      resultBox.classList.remove("hidden");
-      resultBox.innerHTML = `<span>Escribe cuántos <strong>puntos por unidad</strong> da "${escapeHtml(chosen.name)}" para calcular cuántas unidades necesitas.</span>`;
-    } else {
-      resultBox.classList.add("hidden");
     }
 
     // Shopping / Goal mixed list
@@ -5297,7 +5362,7 @@ input[type="number"] {
         if (pur) {
           pur.status = "confirmed";
           savePurchases();
-          renderPurchaseCalendar();
+          renderPointsGoal();
           showToast("Compra confirmada");
         }
       } else if (del) {
@@ -5305,7 +5370,7 @@ input[type="number"] {
         if (idx !== -1 && confirm("¿Eliminar esta compra guardada?")) {
           purchases.splice(idx, 1);
           savePurchases();
-          renderPurchaseCalendar();
+          renderPointsGoal();
           showToast("Compra eliminada");
         }
       }
