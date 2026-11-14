@@ -1911,6 +1911,21 @@ input[type="number"] {
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.96rem;
+  background: var(--surface);
+  color: var(--text);
+  min-height: 44px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.goal-card select:focus,
+.goal-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .goal-card-head {
@@ -5241,8 +5256,17 @@ input[type="number"] {
     });
 
     $("btn-cal-show-month").addEventListener("click", () => {
-      selectedCalDate = "";
+      if (selectedCalDate) {
+        selectedCalDate = "";
+      } else {
+        const now = new Date();
+        calYear = now.getFullYear();
+        calMonth = now.getMonth();
+      }
       renderPurchaseCalendar();
+      const label = $("cal-month-label")?.textContent || "este mes";
+      toast(`Mostrando compras de ${label}`, "success");
+      $("cal-day-purchases")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
 
     $("purchase-calendar").addEventListener("click", (e) => {
