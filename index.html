@@ -5203,13 +5203,13 @@ input[type="search"]:focus {
     });
 
     // Lo que se fue listeners
-    gone-list?.addEventListener("click", (e) => {
+    $("gone-list")?.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-gone-undo]");
       if (!btn) return;
       const idx = sales.findIndex((s) => s.id === btn.dataset.goneUndo);
       if (idx === -1) return;
       const sale = sales[idx];
-      if (!confirm(¿Devolver "" ( u.) al inventario?)) return;
+      if (!confirm(`¿Devolver "${sale.name}" (${sale.units} u.) al inventario?`)) return;
       const prod = inventory.find((p) => p.id === sale.productId);
       if (prod) {
         prod.totalUnits = Math.max(0, (Number(prod.totalUnits) || 0) + (Number(sale.units) || 0));
@@ -5221,7 +5221,7 @@ input[type="search"]:focus {
       showToast("Producto devuelto al inventario");
     });
 
-    btn-clear-gone?.addEventListener("click", () => {
+    $("btn-clear-gone")?.addEventListener("click", () => {
       if (sales.length === 0) return;
       if (!confirm("¿Limpiar la lista de lo que se fue?")) return;
       sales = [];
