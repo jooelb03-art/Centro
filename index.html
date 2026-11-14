@@ -5753,6 +5753,7 @@ input[type="number"] {
           return;
         }
         googleAccessToken = resp.access_token;
+        localStorage.setItem("amway_dr_google_linked_v1", "1");
         showToast("Conectado a Google");
         closeModal("tools-modal");
         if (!$("welcome-screen").classList.contains("hidden")) {
@@ -5816,6 +5817,7 @@ input[type="number"] {
       window.google.accounts.oauth2.revoke(googleAccessToken);
     }
     googleAccessToken = "";
+    localStorage.removeItem("amway_dr_google_linked_v1");
     updateGoogleUI("offline");
     showToast("Cuenta de Google desconectada");
   });
@@ -5911,9 +5913,38 @@ input[type="number"] {
     }
   }
 
+  function trySilentGoogleReconnect() {
+    if (localStorage.getItem("amway_dr_google_linked_v1") !== "1") return;
+    const clientId = getGoogleClientId();
+    if (!clientId) return;
+    let attempts = 0;
+    const timer = setInterval(() => {
+      attempts += 1;
+      if (window.google?.accounts?.oauth2) {
+        clearInterval(timer);
+        try {
+          const silentClient = window.google.accounts.oauth2.initTokenClient({
+            client_id: clientId,
+            scope: GOOGLE_SCOPES,
+            callback: (resp) => {
+              if (!resp.error && resp.access_token) {
+                googleAccessToken = resp.access_token;
+                syncWithGoogle(true);
+              }
+            }
+          });
+          silentClient.requestAccessToken({ prompt: "" });
+        } catch {}
+      } else if (attempts > 15) {
+        clearInterval(timer);
+      }
+    }, 400);
+  }
+
   if (localStorage.getItem(STORAGE_AUTH) === "active" && (userProfile.name || "").trim()) {
     $("splash-screen").classList.add("hidden");
     showWelcomeStep("done");
+    trySilentGoogleReconnect();
   } else {
     showWelcomeStep("google");
     runIntroSplash();
