@@ -2226,18 +2226,18 @@ input[type="search"]:focus {
             <strong class="summary-value" id="sum-products">0</strong>
           </div>
           <div class="summary-card">
-            <span class="summary-label">Dinero en inventario</span>
-            <strong class="summary-value" id="sum-sale">RD$ 0</strong>
-          </div>
-          <div class="summary-card summary-card-profit">
             <span class="summary-label">Puntos en inventario</span>
+            <strong class="summary-value" id="sum-sale">0 pts</strong>
+          </div>
+          <div class="summary-card summary-card-profit" onclick="document.getElementById('btn-open-summary-details')?.click()" style="cursor:pointer;" title="Toca para ver puntos por mes">
+            <span class="summary-label" id="sum-month-pts-label">Puntos del mes</span>
             <strong class="summary-value" id="sum-profit">0 pts</strong>
           </div>
         </div>
 
         <div class="summary-details-row">
           <button type="button" id="btn-open-summary-details" class="btn-details-link">
-            Ver más detalles (unidades, costo, puntos) →
+            Ver más detalles (unidades, puntos por mes) →
           </button>
         </div>
 
@@ -2745,6 +2745,10 @@ input[type="search"]:focus {
             <span>Productos por acabarse</span>
             <strong id="sum-low" style="color:var(--warm);">0</strong>
           </div>
+        </div>
+        <div id="sum-monthly-points-wrap" style="margin:12px 0;padding:12px;border-radius:12px;background:var(--surface-alt);border:1px solid var(--border);">
+          <strong style="display:block;font-size:0.9rem;margin-bottom:6px;color:var(--primary-dark);">📅 Puntos acumulados por mes</strong>
+          <div id="sum-monthly-points-list" style="display:grid;gap:4px;font-size:0.88rem;color:var(--text);"></div>
         </div>
         <div class="amway-notice-card" style="margin-bottom:0;">
           <p class="notice-text">
@@ -4277,14 +4281,44 @@ input[type="search"]:focus {
       if (m.totalUnits <= minStock) lowCount += 1;
     }
 
+    const nowDate = new Date();
+    const nowYm = nowDate.toISOString().slice(0, 7);
+    const monthName = nowDate.toLocaleDateString("es-DO", { month: "long" });
+    const byMonthPts = {};
+    for (const s of sales) {
+      const ym = (s.date || "").slice(0, 7) || nowYm;
+      byMonthPts[ym] = Math.round(((byMonthPts[ym] || 0) + (Number(s.pv) || 0)) * 100) / 100;
+    }
+    const currentMonthSoldPts = Math.round((byMonthPts[nowYm] || 0) * 100) / 100;
+    const invPtsRounded = Math.round(totalPv * 100) / 100;
+
     if ($("sum-products")) $("sum-products").textContent = inventory.length;
     if ($("sum-units")) $("sum-units").textContent = totalUnits;
     if ($("sum-cost")) $("sum-cost").textContent = formatRD(totalCostVal);
-    $("sum-sale").textContent = formatRD(totalSaleVal);
-    $("sum-profit").textContent = `${Math.round(totalPv * 100) / 100} pts`;
-    $("sum-pv").textContent = `${Math.round(totalPv * 100) / 100} pts`;
-    $("sum-low").textContent = lowCount;
-    $("catalog-count").textContent = catalog.length;
+    if ($("sum-sale")) $("sum-sale").textContent = `${invPtsRounded} pts`;
+    if ($("sum-month-pts-label")) $("sum-month-pts-label").textContent = `Puntos en ${monthName}`;
+    if ($("sum-profit")) $("sum-profit").textContent = `${currentMonthSoldPts} pts`;
+    if ($("sum-pv")) $("sum-pv").textContent = `${invPtsRounded} pts`;
+    if ($("sum-low")) $("sum-low").textContent = lowCount;
+    if ($("catalog-count")) $("catalog-count").textContent = catalog.length;
+
+    const monthlyListEl = $("sum-monthly-points-list");
+    if (monthlyListEl) {
+      const keys = Object.keys(byMonthPts).sort((a, b) => b.localeCompare(a));
+      if (keys.length === 0) {
+        monthlyListEl.innerHTML = `<span style="color:var(--text-muted);">Aún no hay puntos vendidos registrados. Cuando marques productos como <strong>Ya se fue</strong>, se irán sumando aquí por mes.</span>`;
+      } else {
+        monthlyListEl.innerHTML = keys
+          .map((ym) => {
+            const [y, m] = ym.split("-").map(Number);
+            const lbl = y && m
+              ? new Date(y, m - 1, 1).toLocaleDateString("es-DO", { month: "long", year: "numeric" })
+              : ym;
+            return `<div style="display:flex;justify-content:space-between;align-items:center;"><span>${escapeHtml(lbl)}</span><strong style="color:var(--primary);">${byMonthPts[ym]} pts</strong></div>`;
+          })
+          .join("");
+      }
+    }
 
     const lowBanner = $("btn-filter-low-stock");
     if (lowBanner) {
