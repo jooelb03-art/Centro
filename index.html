@@ -2930,6 +2930,8 @@ input[type="search"]:focus {
   const STORAGE_AUTH = "amway_dr_session_v1";
   const STORAGE_GCLIENT = "amway_dr_google_client_id";
   const STORAGE_GMETA = "amway_dr_google_meta";
+  const STORAGE_HAS_STATE = "amway_dr_has_local_state_v1";
+  const STORAGE_DIRTY = "amway_dr_dirty_v1";
 
   // Opcional: pega aquí tu Google OAuth Client ID una sola vez antes de publicar
   const DEFAULT_GOOGLE_CLIENT_ID = "840684105586-uf930j95at6p2bhf6avvaago2tmp19lj.apps.googleusercontent.com";
@@ -3607,9 +3609,17 @@ input[type="search"]:focus {
 
   let userProfile = {};
 
-  function saveProfile() {
+  function markLocalStateChanged(skipCloud = false) {
+    if (skipCloud) return;
+    localStorage.setItem(STORAGE_HAS_STATE, "1");
+    localStorage.setItem(STORAGE_DIRTY, "1");
+    if (googleAccessToken) scheduleCloudSync();
+  }
+
+  function saveProfile(skipCloud = false) {
     localStorage.setItem(STORAGE_PROFILE, JSON.stringify(userProfile));
     renderProfile();
+    markLocalStateChanged(skipCloud);
   }
 
   function renderProfile() {
@@ -3650,16 +3660,17 @@ input[type="search"]:focus {
 
   function saveInventory(skipCloud = false) {
     localStorage.setItem(STORAGE_INV, JSON.stringify(inventory));
-    if (!skipCloud && googleAccessToken) scheduleCloudSync();
+    markLocalStateChanged(skipCloud);
   }
 
   function saveCatalog(skipCloud = false) {
     localStorage.setItem(STORAGE_CAT, JSON.stringify(catalog));
-    if (!skipCloud && googleAccessToken) scheduleCloudSync();
+    markLocalStateChanged(skipCloud);
   }
 
-  function saveSales() {
+  function saveSales(skipCloud = false) {
     localStorage.setItem(STORAGE_SALES, JSON.stringify(sales));
+    markLocalStateChanged(skipCloud);
   }
 
   function recordSale(prod, units, unitSalePrice, dateStr) {
@@ -3800,8 +3811,9 @@ input[type="search"]:focus {
     goalPlan = [];
   }
 
-  function saveGoalPlan() {
+  function saveGoalPlan(skipCloud = false) {
     localStorage.setItem(STORAGE_GOAL_PLAN, JSON.stringify(goalPlan));
+    markLocalStateChanged(skipCloud);
   }
 
   function getGoalSourceProducts() {
@@ -4092,8 +4104,9 @@ input[type="search"]:focus {
     purchases = [];
   }
 
-  function savePurchases() {
+  function savePurchases(skipCloud = false) {
     localStorage.setItem(STORAGE_PURCHASES, JSON.stringify(purchases));
+    markLocalStateChanged(skipCloud);
   }
 
   const nowDate = new Date();
@@ -5273,6 +5286,7 @@ input[type="search"]:focus {
     // Meta de puntos listeners
     $("goal-points-input").addEventListener("input", () => {
       localStorage.setItem(STORAGE_GOAL, $("goal-points-input").value);
+      markLocalStateChanged(false);
       renderPointsGoal();
     });
 
@@ -5742,14 +5756,115 @@ input[type="search"]:focus {
       details: r[9] || ""
     }));
 
-    if (inventory.length === 0 && remoteInv.length > 0) {
+    const hasLocal = localStorage.getItem(STORAGE_HAS_STATE) === "1" || localStorage.getItem(STORAGE_DIRTY) === "1";
+    if (!hasLocal && inventory.length === 0 && remoteInv.length > 0) {
       inventory = remoteInv;
       saveInventory(true);
     }
-    if (catalog.length === 0 && remoteCat.length > 0) {
+    if (!hasLocal && catalog.length === 0 && remoteCat.length > 0) {
       catalog = remoteCat;
       saveCatalog(true);
     }
+    if (!hasLocal) {
+      await pullAppStateFromDriveIfEmpty();
+    }
+  }
+
+  async function findStateFileId() {
+    if (!googleMeta.folderId) return null;
+    if (googleMeta.stateFileId) return googleMeta.stateFileId;
+    const q = encodeURIComponent(`name='centro_state.json' and '${googleMeta.folderId}' in parents and trashed=false`);
+    const res = await gFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`);
+    if (res.files && res.files.length > 0) {
+      googleMeta.stateFileId = res.files[0].id;
+      saveGoogleMeta();
+      return googleMeta.stateFileId;
+    }
+    return null;
+  }
+
+  async function pushAppStateToDrive() {
+    if (!googleMeta.folderId) return;
+    const payload = JSON.stringify({
+      sales,
+      purchases,
+      goalPlan,
+      goal: localStorage.getItem(STORAGE_GOAL) || "",
+      userProfile,
+      examplesDismissed: localStorage.getItem("amway_dr_examples_dismissed_v1") || "0",
+      updatedAt: new Date().toISOString()
+    });
+    const fileId = await findStateFileId();
+    if (fileId) {
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${googleAccessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: payload
+      });
+    } else {
+      const metadata = {
+        name: "centro_state.json",
+        parents: [googleMeta.folderId],
+        mimeType: "application/json"
+      };
+      const boundary = "centro_state_boundary_" + Date.now();
+      const body =
+        `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+        `--${boundary}\r\nContent-Type: application/json\r\n\r\n${payload}\r\n` +
+        `--${boundary}--`;
+      const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${googleAccessToken}`,
+          "Content-Type": `multipart/related; boundary=${boundary}`
+        },
+        body
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.id) {
+          googleMeta.stateFileId = data.id;
+          saveGoogleMeta();
+        }
+      }
+    }
+  }
+
+  async function pullAppStateFromDriveIfEmpty() {
+    try {
+      const fileId = await findStateFileId();
+      if (!fileId) return;
+      const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+        headers: { Authorization: `Bearer ${googleAccessToken}` }
+      });
+      if (!res.ok) return;
+      const state = await res.json();
+      if (Array.isArray(state.sales) && sales.length === 0) {
+        sales = state.sales;
+        saveSales(true);
+      }
+      if (Array.isArray(state.purchases) && purchases.length === 0) {
+        purchases = state.purchases;
+        savePurchases(true);
+      }
+      if (Array.isArray(state.goalPlan) && goalPlan.length === 0) {
+        goalPlan = state.goalPlan;
+        saveGoalPlan(true);
+      }
+      if (state.goal && !localStorage.getItem(STORAGE_GOAL)) {
+        localStorage.setItem(STORAGE_GOAL, state.goal);
+      }
+      if (state.userProfile && state.userProfile.name && !(userProfile.name || "").trim()) {
+        userProfile = state.userProfile;
+        saveProfile(true);
+      }
+      if (state.examplesDismissed === "1") {
+        localStorage.setItem("amway_dr_examples_dismissed_v1", "1");
+      }
+    } catch {}
   }
 
   async function syncWithGoogle(isInitial = false) {
@@ -5765,8 +5880,13 @@ input[type="search"]:focus {
       if (isInitial) {
         await pullFromGoogleSheetsIfLocalEmpty();
         renderInventory();
+        renderEarnings();
+        renderProfile();
       }
       await pushToGoogleSheets();
+      await pushAppStateToDrive();
+      localStorage.removeItem(STORAGE_DIRTY);
+      localStorage.setItem(STORAGE_HAS_STATE, "1");
       const nowStr = new Date().toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit" });
       updateGoogleUI("online", `Última copia: ${nowStr}`);
     } catch (err) {
@@ -5784,7 +5904,7 @@ input[type="search"]:focus {
 
   function scheduleCloudSync() {
     clearTimeout(scheduleCloudSync._t);
-    scheduleCloudSync._t = setTimeout(() => syncWithGoogle(false), 700);
+    scheduleCloudSync._t = setTimeout(() => syncWithGoogle(false), 350);
   }
 
   let onboardingSelected = [];
