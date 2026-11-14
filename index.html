@@ -442,15 +442,28 @@ label {
 .search-input,
 .select-input,
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="search"] {
   width: 100%;
-  min-height: 42px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
   background: var(--surface);
   color: var(--text);
-  font-size: 0.95rem;
+  font-family: inherit;
+  font-size: 0.96rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus,
+.select-input:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .filter-pills {
@@ -2350,9 +2363,16 @@ input[type="number"] {
 
           <div class="section-divider" style="margin:10px 0;">Armar lista de compra y puntos</div>
 
-          <div class="form-group">
-            <label for="goal-product-select">Elige un producto</label>
-            <select id="goal-product-select"></select>
+          <div class="form-group" id="goal-product-picker-wrap">
+            <label for="goal-product-search">Elige o escribe un producto</label>
+            <input
+              type="search"
+              id="goal-product-search"
+              placeholder="🔎 Busca por nombre o escribe uno nuevo..."
+              autocomplete="off"
+            />
+            <input type="hidden" id="goal-product-id" value="" />
+            <div id="goal-product-suggestions" class="amway-suggestions hidden" style="margin-top:6px;"></div>
           </div>
 
           <div class="form-row-3" style="margin-top:8px;">
@@ -3809,46 +3829,79 @@ input[type="number"] {
     return list;
   }
 
-  function populateGoalProductSelect() {
-    const sel = $("goal-product-select");
-    if (!sel) return;
-    const prev = sel.value;
-    sel.innerHTML = "";
+  function populateGoalProductSelect(filterQuery = "", forceOpen = false) {
+    const sugBox = $("goal-product-suggestions");
+    const searchEl = $("goal-product-search");
+    if (!sugBox || !searchEl) return;
+
+    const q = (filterQuery !== undefined ? filterQuery : searchEl.value || "").trim().toLowerCase();
+    if (!forceOpen && !q) {
+      sugBox.classList.add("hidden");
+      sugBox.innerHTML = "";
+      return;
+    }
+
     const allProds = getGoalSourceProducts();
-    const mine = allProds.filter((p) => p._group !== "amway");
-    const amway = allProds.filter((p) => p._group === "amway");
+    const matches = allProds
+      .filter((p) => {
+        if (!q) return true;
+        return (
+          (p.name || "").toLowerCase().includes(q) ||
+          (p.sku || "").toLowerCase().includes(q) ||
+          (p.category || "").toLowerCase().includes(q)
+        );
+      })
+      .slice(0, 18);
 
-    if (mine.length > 0) {
-      const grpMine = document.createElement("optgroup");
-      grpMine.label = "Tus productos";
-      for (const p of mine) {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.name;
-        grpMine.appendChild(opt);
-      }
-      sel.appendChild(grpMine);
+    sugBox.innerHTML = "";
+    for (const p of matches) {
+      const m = getProductMath(p);
+      const ptsVal = Number(p.pv) > 0 ? p.pv : m.pv || 0;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "amway-suggestion-item";
+      const thumbHtml = p.photo
+        ? `<img src="${escapeHtml(p.photo)}" alt="" style="width:38px;height:38px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:#fff;flex-shrink:0;" />`
+        : `<div style="width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:var(--surface-alt);display:grid;place-items:center;flex-shrink:0;font-size:1.1rem;">📦</div>`;
+      const badgeText = p._group === "amway" ? "Catálogo Amway" : "Tus productos";
+      btn.innerHTML = `
+        ${thumbHtml}
+        <div style="min-width:0;flex:1;">
+          <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</strong>
+          <div style="font-size:0.78rem;color:var(--text-muted);">${badgeText}${ptsVal > 0 ? ` · ${ptsVal} pts c/u` : ""}${p.unitsPerBox > 1 ? ` · ${p.unitsPerBox} u/caja` : ""}</div>
+        </div>
+      `;
+      btn.addEventListener("click", () => {
+        $("goal-product-id").value = p.id;
+        searchEl.value = p.name;
+        $("goal-prod-pv").value = ptsVal > 0 ? ptsVal : "";
+        sugBox.classList.add("hidden");
+        renderPointsGoal();
+      });
+      sugBox.appendChild(btn);
     }
 
-    if (amway.length > 0) {
-      const grpAmw = document.createElement("optgroup");
-      grpAmw.label = "Catálogo Amway (para pedir)";
-      for (const p of amway) {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.unitsPerBox > 1 ? `${p.name} (${p.unitsPerBox} u/caja)` : p.name;
-        grpAmw.appendChild(opt);
-      }
-      sel.appendChild(grpAmw);
+    if (q) {
+      const customBtn = document.createElement("button");
+      customBtn.type = "button";
+      customBtn.className = "amway-suggestion-item";
+      customBtn.style.borderStyle = "dashed";
+      customBtn.innerHTML = `
+        <div style="width:38px;height:38px;border-radius:8px;background:var(--primary-soft);display:grid;place-items:center;flex-shrink:0;font-size:1.1rem;">✨</div>
+        <div style="min-width:0;flex:1;">
+          <strong style="display:block;">Usar "${escapeHtml(searchEl.value.trim())}"</strong>
+          <div style="font-size:0.78rem;color:var(--text-muted);">Agregar aunque no esté en Mis Productos</div>
+        </div>
+      `;
+      customBtn.addEventListener("click", () => {
+        $("goal-product-id").value = "";
+        sugBox.classList.add("hidden");
+        $("goal-prod-pv").focus();
+      });
+      sugBox.appendChild(customBtn);
     }
 
-    if (prev && allProds.some((p) => p.id === prev)) {
-      sel.value = prev;
-    }
-    const chosen = allProds.find((p) => p.id === sel.value) || allProds[0];
-    if (chosen && (document.activeElement !== $("goal-prod-pv") || !$("goal-prod-pv").value)) {
-      $("goal-prod-pv").value = Number(chosen.pv) > 0 ? chosen.pv : "";
-    }
+    sugBox.classList.remove("hidden");
   }
 
   function renderPointsGoal() {
@@ -5223,32 +5276,60 @@ input[type="number"] {
       renderPointsGoal();
     });
 
-    $("goal-product-select").addEventListener("change", () => {
-      const chosen = getGoalSourceProducts().find((p) => p.id === $("goal-product-select").value);
-      $("goal-prod-pv").value = chosen && Number(chosen.pv) > 0 ? chosen.pv : "";
-      renderPointsGoal();
+    $("goal-product-search").addEventListener("focus", () => {
+      populateGoalProductSelect($("goal-product-search").value, true);
+    });
+
+    $("goal-product-search").addEventListener("input", () => {
+      $("goal-product-id").value = "";
+      populateGoalProductSelect($("goal-product-search").value, true);
+    });
+
+    document.addEventListener("click", (e) => {
+      const wrap = $("goal-product-picker-wrap");
+      const sug = $("goal-product-suggestions");
+      if (wrap && sug && !wrap.contains(e.target)) {
+        sug.classList.add("hidden");
+      }
     });
 
     $("goal-prod-pv").addEventListener("input", renderPointsGoal);
 
     $("btn-goal-add-direct").addEventListener("click", () => {
-      const chosen = getGoalSourceProducts().find((p) => p.id === $("goal-product-select").value);
-      if (!chosen) return;
+      const allProds = getGoalSourceProducts();
+      const selectedId = $("goal-product-id").value;
+      const typedName = ($("goal-product-search").value || "").trim();
+      let chosen = selectedId ? allProds.find((p) => p.id === selectedId) : null;
+      if (!chosen && typedName) {
+        chosen = allProds.find((p) => (p.name || "").trim().toLowerCase() === typedName.toLowerCase()) || null;
+      }
+
+      if (!chosen && !typedName) {
+        showToast("Escribe o elige un producto para agregar");
+        $("goal-product-search").focus();
+        return;
+      }
+
       const pv = Math.max(0, Number($("goal-prod-pv").value) || 0);
       const qty = Math.max(1, parseInt($("goal-add-qty").value, 10) || 1);
       const mode = $("goal-add-mode").value;
-      const m = getProductMath(chosen);
+
+      const itemId = chosen
+        ? chosen.id
+        : "custom_" + typedName.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+      const itemName = chosen ? chosen.name : typedName;
+      const m = chosen ? getProductMath(chosen) : { unitsPerBox: 1, totalCost: 0, profitNormal: 0 };
       const unitsToAdd = mode === "box" ? qty * (m.unitsPerBox || 1) : qty;
 
-      const existing = goalPlan.find((g) => g.id === chosen.id);
+      const existing = goalPlan.find((g) => g.id === itemId);
       if (existing) {
         existing.units += unitsToAdd;
         if (pv > 0) existing.pv = pv;
       } else {
         goalPlan.push({
-          id: chosen.id,
-          name: chosen.name,
-          photo: chosen.photo || "",
+          id: itemId,
+          name: itemName,
+          photo: chosen?.photo || "",
           unitsPerBox: m.unitsPerBox || 1,
           pv,
           costPerUnit: m.totalCost || 0,
@@ -5256,6 +5337,9 @@ input[type="number"] {
           units: unitsToAdd
         });
       }
+      $("goal-product-id").value = "";
+      $("goal-product-search").value = "";
+      $("goal-product-suggestions").classList.add("hidden");
       saveGoalPlan();
       renderPointsGoal();
       showToast(`Agregado a tu lista (${unitsToAdd} u.)`);
