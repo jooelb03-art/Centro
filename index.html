@@ -2096,16 +2096,9 @@ input[type="number"] {
     <span id="splash-sound-hint" class="splash-sound-hint hidden">🔊 Toca la pantalla para escuchar el sonido</span>
   </div>
 
-  <!-- Welcome / 3-Step Onboarding -->
+  <!-- Welcome / Name Step -->
   <div id="welcome-screen" class="welcome-screen hidden">
     <div class="welcome-card">
-      <div class="onboarding-progress" aria-label="Progreso de bienvenida">
-        <span id="onb-pill-1" class="step-pill active"></span>
-        <span id="onb-pill-2" class="step-pill"></span>
-        <span id="onb-pill-3" class="step-pill"></span>
-      </div>
-
-      <!-- Paso 1: ¿Cómo te llamas? -->
       <div id="welcome-step-name">
         <div class="welcome-badge" style="background:transparent;padding:0;margin-bottom:10px;">
           <svg width="62" height="62" viewBox="0 0 100 100" aria-hidden="true">
@@ -2133,32 +2126,8 @@ input[type="number"] {
             <label for="welcome-name-input">Tu nombre *</label>
             <input type="text" id="welcome-name-input" required placeholder="Ej. María" autocomplete="given-name" />
           </div>
-          <button type="submit" class="btn btn-primary btn-full">Siguiente →</button>
+          <button type="submit" class="btn btn-primary btn-full">Entrar a Centro</button>
         </form>
-      </div>
-
-      <!-- Paso 2: Tus 3 productos -->
-      <div id="welcome-step-products" class="hidden">
-        <h2>Tus 3 productos</h2>
-        <p class="welcome-desc">Toca hasta 3 productos que vendas más, o salta para ver ejemplos.</p>
-        <input type="search" id="onb-catalog-search" class="search-input" placeholder="🔍 Buscar en catálogo Amway..." autocomplete="off" style="margin-bottom:8px;" />
-        <div id="onb-selected-count" class="field-hint" style="font-weight:700;color:var(--primary);margin-bottom:4px;">0 de 3 elegidos</div>
-        <div id="onb-catalog-grid" class="onboarding-catalog-grid"></div>
-        <div style="display:flex;gap:10px;margin-top:12px;">
-          <button type="button" id="btn-onb-back-1" class="btn btn-outline" style="flex:1;">← Atrás</button>
-          <button type="button" id="btn-onb-to-3" class="btn btn-primary" style="flex:2;">Siguiente →</button>
-        </div>
-      </div>
-
-      <!-- Paso 3: Precios -->
-      <div id="welcome-step-prices" class="hidden">
-        <h2>Precios</h2>
-        <p class="welcome-desc" id="onb-prices-desc">Pon cuántas unidades tienes, lo que pagaste y a cómo lo vendes.</p>
-        <div id="onb-price-list" class="onboarding-price-list"></div>
-        <div style="display:flex;gap:10px;margin-top:14px;">
-          <button type="button" id="btn-onb-back-2" class="btn btn-outline" style="flex:1;">← Atrás</button>
-          <button type="button" id="btn-onb-finish" class="btn btn-primary" style="flex:2;">¡Listo, entrar!</button>
-        </div>
       </div>
     </div>
   </div>
@@ -5706,9 +5675,6 @@ input[type="number"] {
   function showWelcomeStep(step) {
     const screen = $("welcome-screen");
     const shell = $("app-shell");
-    const stepName = $("welcome-step-name");
-    const stepProducts = $("welcome-step-products");
-    const stepPrices = $("welcome-step-prices");
 
     if (step === "done") {
       screen.classList.add("hidden");
@@ -5721,37 +5687,13 @@ input[type="number"] {
 
     shell.classList.add("hidden");
     screen.classList.remove("hidden");
-    stepName.classList.add("hidden");
-    stepProducts.classList.add("hidden");
-    stepPrices.classList.add("hidden");
-
-    const p1 = $("onb-pill-1");
-    const p2 = $("onb-pill-2");
-    const p3 = $("onb-pill-3");
-    [p1, p2, p3].forEach((p) => p && p.classList.remove("active", "done"));
-
-    if (step === "products") {
-      p1?.classList.add("done");
-      p2?.classList.add("active");
-      stepProducts.classList.remove("hidden");
-      renderOnboardingCatalog($("onb-catalog-search").value);
-    } else if (step === "prices") {
-      p1?.classList.add("done");
-      p2?.classList.add("done");
-      p3?.classList.add("active");
-      stepPrices.classList.remove("hidden");
-      renderOnboardingPrices();
-    } else {
-      p1?.classList.add("active");
-      stepName.classList.remove("hidden");
-      if (userProfile.photo) {
-        $("welcome-avatar-img").src = userProfile.photo;
-        $("welcome-avatar-img").classList.remove("hidden");
-        $("welcome-avatar-fallback").classList.add("hidden");
-      }
-      if (userProfile.name) $("welcome-name-input").value = userProfile.name;
-      setTimeout(() => $("welcome-name-input")?.focus(), 80);
+    if (userProfile.photo) {
+      $("welcome-avatar-img").src = userProfile.photo;
+      $("welcome-avatar-img").classList.remove("hidden");
+      $("welcome-avatar-fallback").classList.add("hidden");
     }
+    if (userProfile.name) $("welcome-name-input").value = userProfile.name;
+    setTimeout(() => $("welcome-name-input")?.focus(), 80);
   }
 
   function startGoogleSignIn() {
@@ -5806,49 +5748,6 @@ input[type="number"] {
     if (!name) return;
     userProfile.name = name;
     saveProfile();
-    showWelcomeStep("products");
-  });
-
-  $("onb-catalog-search").addEventListener("input", (e) => {
-    renderOnboardingCatalog(e.target.value);
-  });
-
-  $("btn-onb-back-1").addEventListener("click", () => showWelcomeStep("name"));
-  $("btn-onb-to-3").addEventListener("click", () => showWelcomeStep("prices"));
-  $("btn-onb-back-2").addEventListener("click", () => showWelcomeStep("products"));
-
-  $("onb-price-list").addEventListener("input", (e) => {
-    const idx = e.target.dataset.onbIdx;
-    const field = e.target.dataset.onbField;
-    if (idx === undefined || !field || !onboardingSelected[idx]) return;
-    onboardingSelected[idx][field] = e.target.value;
-  });
-
-  $("btn-onb-finish").addEventListener("click", () => {
-    if (onboardingSelected.length > 0) {
-      for (const sel of onboardingSelected) {
-        inventory.unshift({
-          id: makeId("prod"),
-          name: sel.name,
-          category: sel.category || "Otro",
-          details: sel.sku ? `Art. #${sel.sku}` : "",
-          photo: sel.photo || "",
-          iboPrice: Number(sel.ibo) || 0,
-          customerPrice: Number(sel.customer) || 0,
-          specialPrice: 0,
-          shipping: 0,
-          tax: 0,
-          pv: 0,
-          unitsPerBox: 1,
-          totalUnits: Math.max(1, parseInt(sel.units, 10) || 1),
-          minStock: 2,
-          isExample: false,
-          updatedAt: new Date().toISOString()
-        });
-      }
-      localStorage.setItem("amway_dr_examples_dismissed_v1", "1");
-      saveInventory();
-    }
     localStorage.setItem(STORAGE_AUTH, "active");
     showWelcomeStep("done");
   });
