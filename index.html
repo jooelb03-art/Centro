@@ -2738,10 +2738,6 @@ input[type="search"]:focus {
             <strong id="sum-units">0</strong>
           </div>
           <div class="details-stat">
-            <span>Lo que pagaste (costo)</span>
-            <strong id="sum-cost">RD$ 0</strong>
-          </div>
-          <div class="details-stat">
             <span>Puntos totales</span>
             <strong id="sum-pv" style="color:var(--primary);">0 pts</strong>
           </div>
@@ -4281,9 +4277,9 @@ input[type="search"]:focus {
       if (m.totalUnits <= minStock) lowCount += 1;
     }
 
-    $("sum-products").textContent = inventory.length;
-    $("sum-units").textContent = totalUnits;
-    $("sum-cost").textContent = formatRD(totalCostVal);
+    if ($("sum-products")) $("sum-products").textContent = inventory.length;
+    if ($("sum-units")) $("sum-units").textContent = totalUnits;
+    if ($("sum-cost")) $("sum-cost").textContent = formatRD(totalCostVal);
     $("sum-sale").textContent = formatRD(totalSaleVal);
     $("sum-profit").textContent = `${Math.round(totalPv * 100) / 100} pts`;
     $("sum-pv").textContent = `${Math.round(totalPv * 100) / 100} pts`;
@@ -4449,27 +4445,27 @@ input[type="search"]:focus {
           </div>
           <div class="hero-price">
             <strong>${formatRD(m.customer)}</strong>
-            <span>Ganas ${formatRD(m.profitNormal)} c/u</span>
+            <span>${m.pv > 0 ? `${m.pv} pts c/u` : "En stock"}</span>
           </div>
         </div>
 
         <div class="card-actions">
           <button type="button" class="action-btn action-btn-sell" data-act="sell" data-id="${p.id}">
-            ✅ Vendido
+            ✅ Ya se fue
           </button>
-          <button type="button" class="action-btn action-btn-box" data-act="add-box" data-id="${p.id}">
+          <button type="button" class="action-btn action-btn-box" data-act="add-box" data-id="${p.id}" style="border:1px solid var(--border);background:var(--surface);">
             ${boxBtnLabel}
           </button>
-          <button type="button" class="action-btn" data-act="sub-unit" data-id="${p.id}">
+          <button type="button" class="action-btn" data-act="sub-unit" data-id="${p.id}" style="border:1px solid var(--border);background:var(--surface);">
             -1 unidad
           </button>
         </div>
 
         <div class="card-actions-secondary">
-          <button type="button" class="action-btn" data-act="edit" data-id="${p.id}">
+          <button type="button" class="action-btn" data-act="edit" data-id="${p.id}" style="border:1px solid var(--border);background:var(--surface);">
             ✏️ Editar
           </button>
-          <button type="button" class="action-btn action-btn-danger" data-act="delete" data-id="${p.id}">
+          <button type="button" class="action-btn action-btn-danger" data-act="delete" data-id="${p.id}" style="border:1px solid #fecaca;background:#fff5f5;">
             🗑️ Eliminar
           </button>
         </div>
@@ -4925,12 +4921,8 @@ input[type="search"]:focus {
         renderInventory();
         showToast("-1 unidad");
       } else if (act === "sell") {
-        if (m.totalUnits <= 0) {
-          showToast("No hay unidades para vender");
-          return;
-        }
-        prod.totalUnits = m.totalUnits - 1;
-        const earned = recordSale(prod, 1, m.customer);
+        prod.totalUnits = Math.max(0, m.totalUnits - 1);
+        recordSale(prod, 1, m.customer);
         if (prod.totalUnits <= 0) {
           if (!catalog.some((c) => normalizeText(c.name) === normalizeText(prod.name))) {
             catalog.unshift({
@@ -4952,8 +4944,7 @@ input[type="search"]:focus {
         }
         saveInventory();
         renderInventory();
-        renderEarnings();
-        showToast(`Vendido · Ganancia +${formatRD(earned)}`);
+        showToast(prod.totalUnits <= 0 ? "Movido a Lo que se fue" : "1 unidad movida a Lo que se fue");
       }
     });
 
