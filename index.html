@@ -532,7 +532,9 @@ input[type="search"]:focus {
 .product-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 4px;
 }
 
 .product-head-info {
@@ -2216,16 +2218,6 @@ input[type="search"]:focus {
 
     <!-- Main Content Area -->
     <main class="app-main">
-      <!-- Top View Switcher -->
-      <div class="view-switcher" role="tablist" aria-label="Secciones">
-        <button type="button" class="view-tab-btn active" data-view="inventario" role="tab" aria-selected="true">
-          📦 Inventario
-        </button>
-        <button type="button" class="view-tab-btn" data-view="ganancias" role="tab" aria-selected="false">
-          🎯 Meta de puntos
-        </button>
-      </div>
-
       <section id="tab-inventario" class="tab-panel active">
         <!-- Top Summary: Only 3 Big Numbers -->
         <div class="summary-grid-3" aria-label="Resumen de inventario">
@@ -2313,116 +2305,21 @@ input[type="search"]:focus {
         <!-- Empty State -->
         <div id="empty-state" class="empty-state hidden">
           <div class="empty-icon">📦</div>
+
+        <!-- Lo que se fue (productos vendidos) -->
+        <div id="gone-section" class="goal-card hidden" style="margin-top:20px;" aria-label="Lo que se fue">
+          <div class="goal-card-head">
+            <h3>📤 Lo que se fue</h3>
+            <button type="button" id="btn-clear-gone" class="btn-text-danger" style="font-size:0.84rem;">Limpiar</button>
+          </div>
+          <p class="field-hint" style="margin:0 0 10px;">Productos que ya marcaste como vendidos.</p>
+          <div id="gone-list" class="goal-plan-list"></div>
+        </div>
           <h3>Tu tienda está lista</h3>
           <p>Toca el botón verde <strong>+ Agregar producto</strong> abajo para empezar.</p>
         </div>
       </section>
 
-      <!-- TAB: META DE PUNTOS Y CALENDARIO -->
-      <section id="tab-ganancias" class="tab-panel">
-        <!-- Meta de Puntos -->
-        <div class="goal-card" aria-label="Meta de puntos">
-          <div class="goal-card-head">
-            <h3>🎯 Meta de puntos del mes</h3>
-            <span id="goal-pct-badge" class="badge-example" style="margin:0;">0%</span>
-          </div>
-
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="goal-points-input">Tu meta (puntos)</label>
-              <input type="number" id="goal-points-input" min="0" step="1" placeholder="Ej. 150" />
-            </div>
-            <div class="form-group">
-              <label>Puntos logrados este mes</label>
-              <div id="goal-current-pts" style="padding:10px 12px;background:var(--surface-alt);border:1.5px solid var(--border);border-radius:12px;font-weight:800;color:var(--primary);">0 pts</div>
-            </div>
-          </div>
-
-          <div class="goal-progress-track">
-            <div id="goal-progress-fill" class="goal-progress-fill"></div>
-          </div>
-          <p id="goal-progress-text" class="field-hint" style="margin:0 0 12px;">Pon tu meta arriba para calcular cuántos productos necesitas vender.</p>
-
-          <div class="section-divider" style="margin:10px 0;">Armar lista de compra y puntos</div>
-
-          <div class="form-group" id="goal-product-picker-wrap">
-            <label for="goal-product-search">Elige o escribe un producto</label>
-            <input
-              type="search"
-              id="goal-product-search"
-              placeholder="🔎 Busca por nombre o escribe uno nuevo..."
-              autocomplete="off"
-            />
-            <input type="hidden" id="goal-product-id" value="" />
-            <div id="goal-product-suggestions" class="amway-suggestions hidden" style="margin-top:6px;"></div>
-          </div>
-
-          <div class="form-row-3" style="margin-top:8px;">
-            <div class="form-group">
-              <label for="goal-prod-pv">Puntos c/u</label>
-              <input type="number" id="goal-prod-pv" min="0" step="0.01" placeholder="Ej. 4.5" />
-            </div>
-            <div class="form-group">
-              <label for="goal-add-qty">Cantidad</label>
-              <input type="number" id="goal-add-qty" min="1" step="1" value="1" />
-            </div>
-            <div class="form-group">
-              <label for="goal-add-mode">Tipo</label>
-              <select id="goal-add-mode">
-                <option value="unit">Unidades</option>
-                <option value="box">Cajas</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="button" id="btn-goal-add-direct" class="btn btn-primary btn-full" style="margin-top:10px;">
-            ＋ Agregar a la lista
-          </button>
-
-          <div id="goal-calc-result" class="goal-result-box hidden"></div>
-
-          <div id="goal-plan-wrap" class="hidden" style="margin-top:14px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-              <strong style="font-size:0.98rem;">🛒 Tu lista de compra / plan:</strong>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <button type="button" id="btn-goal-copy-plan" class="btn btn-outline btn-sm" style="padding:5px 10px;">📋 Copiar</button>
-                <button type="button" id="btn-goal-clear-plan" class="btn-text-danger" style="font-size:0.82rem;">Limpiar</button>
-              </div>
-            </div>
-            <div id="goal-plan-list" class="goal-plan-list"></div>
-            <p id="goal-plan-summary" class="field-hint" style="font-weight:700;color:var(--primary);margin-top:10px;font-size:0.95rem;"></p>
-
-            <div class="form-group" style="margin-top:12px;">
-              <label for="goal-purchase-date">Fecha de esta compra (ej. próximo lunes)</label>
-              <input type="date" id="goal-purchase-date" />
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
-              <button type="button" id="btn-goal-schedule" class="btn btn-outline" style="border-color:var(--warm);color:#9a3412;">
-                📅 Programar día
-              </button>
-              <button type="button" id="btn-goal-confirm" class="btn btn-primary">
-                ✅ Confirmar compra
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Calendario de Compras -->
-        <div class="goal-card" aria-label="Calendario de compras">
-          <div class="goal-card-head">
-            <h3>📅 Calendario de compras</h3>
-            <button type="button" id="btn-cal-show-month" class="btn-details-link" style="padding:5px 10px;font-size:0.8rem;">Ver mes</button>
-          </div>
-          <div class="cal-header">
-            <button type="button" id="btn-cal-prev" class="cal-nav-btn" aria-label="Mes anterior">‹</button>
-            <strong id="cal-month-label" style="text-transform:capitalize;font-size:1rem;"></strong>
-            <button type="button" id="btn-cal-next" class="cal-nav-btn" aria-label="Mes siguiente">›</button>
-          </div>
-          <div id="purchase-calendar" class="cal-grid"></div>
-          <div id="cal-day-purchases" style="margin-top:12px;"></div>
-        </div>
-      </section>
     </main>
 
     <!-- Single Fixed Bottom Green Thumb Button -->
@@ -3877,6 +3774,7 @@ input[type="search"]:focus {
   }
 
   function renderPointsGoal() {
+    if (!$("goal-points-input")) return;
     populateGoalProductSelect();
     const nowYm = new Date().toISOString().slice(0, 7);
     const confirmedPurchasesPts = purchases
@@ -4436,8 +4334,60 @@ input[type="search"]:focus {
   }
 
   // Render Inventory List (Big Storefront Cards)
+  function resolveProductPhoto(prodOrName) {
+    if (prodOrName && typeof prodOrName === "object") {
+      if (prodOrName.photo) return prodOrName.photo;
+      if (prodOrName.photoUrl) return prodOrName.photoUrl;
+    }
+    const rawName = typeof prodOrName === "string" ? prodOrName : (prodOrName?.name || "");
+    const target = normalizeText(rawName);
+    if (!target) return "";
+    const exact = AMWAY_CATALOG.find((c) => normalizeText(c.name) === target);
+    if (exact) return getAmwayCatalogImage(exact);
+    const partial = AMWAY_CATALOG.find((c) => {
+      const cn = normalizeText(c.name);
+      return cn && (target.includes(cn) || cn.includes(target));
+    });
+    return partial ? getAmwayCatalogImage(partial) : "";
+  }
+
+  function renderGoneList() {
+    const sec = $("gone-section");
+    const listEl = $("gone-list");
+    if (!sec || !listEl) return;
+    if (!Array.isArray(sales) || sales.length === 0) {
+      sec.classList.add("hidden");
+      listEl.innerHTML = "";
+      return;
+    }
+    sec.classList.remove("hidden");
+    listEl.innerHTML = "";
+    for (const s of sales) {
+      const d = s.date ? new Date(s.date) : new Date();
+      const dateLabel = d.toLocaleDateString("es-DO", { day: "numeric", month: "short", year: "numeric" });
+      const photo = resolveProductPhoto(s);
+      const unitTxt = `${s.units} ${Number(s.units) === 1 ? "unidad" : "unidades"}`;
+      const row = document.createElement("div");
+      row.className = "goal-plan-item";
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+          ${photo
+            ? `<img src="${escapeHtml(photo)}" alt="" style="width:44px;height:44px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--border);padding:2px;flex-shrink:0;" />`
+            : `<div style="width:44px;height:44px;border-radius:10px;background:var(--surface-alt);border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;">📤</div>`}
+          <div style="min-width:0;">
+            <strong style="display:block;font-size:0.94rem;line-height:1.25;">${escapeHtml(s.name)}</strong>
+            <div style="font-size:0.82rem;color:var(--text-muted);">${unitTxt} · ${dateLabel}</div>
+          </div>
+        </div>
+        <button type="button" class="btn-text-danger" data-gone-undo="${s.id}" style="font-size:0.8rem;flex-shrink:0;">Deshacer</button>
+      `;
+      listEl.appendChild(row);
+    }
+  }
+
   function renderInventory() {
     renderSummary();
+    renderGoneList();
     const listEl = $("inventory-list");
     const emptyEl = $("empty-state");
     const searchShell = $("search-bar-shell");
@@ -4475,11 +4425,12 @@ input[type="search"]:focus {
 
       const unitWord = m.totalUnits === 1 ? "unidad" : "unidades";
       const boxBtnLabel = m.unitsPerBox > 1 ? "+1 caja" : "+1 unidad";
+      const realPhoto = resolveProductPhoto(p);
 
       card.innerHTML = `
         <div class="product-top">
           <div class="product-thumb">
-            ${p.photo ? `<img src="${p.photo}" alt="${escapeHtml(p.name)}" />` : "📦"}
+            ${realPhoto ? `<img src="${escapeHtml(realPhoto)}" alt="${escapeHtml(p.name)}" />` : "📦"}
           </div>
           <div class="product-head-info">
             ${p.isExample ? `<span class="badge-example">✨ Ejemplo</span>` : ""}
@@ -5251,195 +5202,32 @@ input[type="search"]:focus {
       showToast("Venta deshecha y unidades devueltas");
     });
 
-    // Meta de puntos listeners
-    $("goal-points-input").addEventListener("input", () => {
-      localStorage.setItem(STORAGE_GOAL, $("goal-points-input").value);
-      markLocalStateChanged(false);
-      renderPointsGoal();
-    });
-
-    $("goal-product-search").addEventListener("focus", () => {
-      populateGoalProductSelect($("goal-product-search").value, true);
-    });
-
-    $("goal-product-search").addEventListener("input", () => {
-      $("goal-product-id").value = "";
-      populateGoalProductSelect($("goal-product-search").value, true);
-    });
-
-    document.addEventListener("click", (e) => {
-      const wrap = $("goal-product-picker-wrap");
-      const sug = $("goal-product-suggestions");
-      if (wrap && sug && !wrap.contains(e.target)) {
-        sug.classList.add("hidden");
-      }
-    });
-
-    $("goal-prod-pv").addEventListener("input", renderPointsGoal);
-
-    $("btn-goal-add-direct").addEventListener("click", () => {
-      const allProds = getGoalSourceProducts();
-      const selectedId = $("goal-product-id").value;
-      const typedName = ($("goal-product-search").value || "").trim();
-      let chosen = selectedId ? allProds.find((p) => p.id === selectedId) : null;
-      if (!chosen && typedName) {
-        chosen = allProds.find((p) => (p.name || "").trim().toLowerCase() === typedName.toLowerCase()) || null;
-      }
-
-      if (!chosen && !typedName) {
-        showToast("Escribe o elige un producto para agregar");
-        $("goal-product-search").focus();
-        return;
-      }
-
-      const pv = Math.max(0, Number($("goal-prod-pv").value) || 0);
-      const qty = Math.max(1, parseInt($("goal-add-qty").value, 10) || 1);
-      const mode = $("goal-add-mode").value;
-
-      const itemId = chosen
-        ? chosen.id
-        : "custom_" + typedName.toLowerCase().replace(/[^a-z0-9]+/g, "_");
-      const itemName = chosen ? chosen.name : typedName;
-      const m = chosen ? getProductMath(chosen) : { unitsPerBox: 1, totalCost: 0, profitNormal: 0 };
-      const unitsToAdd = mode === "box" ? qty * (m.unitsPerBox || 1) : qty;
-
-      const existing = goalPlan.find((g) => g.id === itemId);
-      if (existing) {
-        existing.units += unitsToAdd;
-        if (pv > 0) existing.pv = pv;
-      } else {
-        goalPlan.push({
-          id: itemId,
-          name: itemName,
-          photo: chosen?.photo || "",
-          unitsPerBox: m.unitsPerBox || 1,
-          pv,
-          costPerUnit: m.totalCost || 0,
-          profitPerUnit: m.profitNormal || 0,
-          units: unitsToAdd
-        });
-      }
-      $("goal-product-id").value = "";
-      $("goal-product-search").value = "";
-      $("goal-product-suggestions").classList.add("hidden");
-      saveGoalPlan();
-      renderPointsGoal();
-      showToast(`Agregado a tu lista (${unitsToAdd} u.)`);
-    });
-
-    $("goal-plan-list").addEventListener("click", (e) => {
-      const add = e.target.closest("[data-plan-add]");
-      const sub = e.target.closest("[data-plan-sub]");
-      const del = e.target.closest("[data-plan-del]");
-      if (add) {
-        const idx = Number(add.dataset.planAdd);
-        if (goalPlan[idx]) goalPlan[idx].units += 1;
-        saveGoalPlan();
-        renderPointsGoal();
-      } else if (sub) {
-        const idx = Number(sub.dataset.planSub);
-        if (goalPlan[idx]) {
-          goalPlan[idx].units -= 1;
-          if (goalPlan[idx].units <= 0) goalPlan.splice(idx, 1);
-        }
-        saveGoalPlan();
-        renderPointsGoal();
-      } else if (del) {
-        const idx = Number(del.dataset.planDel);
-        goalPlan.splice(idx, 1);
-        saveGoalPlan();
-        renderPointsGoal();
-      }
-    });
-
-    $("btn-goal-copy-plan").addEventListener("click", async () => {
-      if (goalPlan.length === 0) return;
-      const lines = goalPlan.map((it) => {
-        const pts = Math.round(it.units * it.pv * 100) / 100;
-        return `- ${it.name}: ${it.units} u. (${pts} pts)`;
-      });
-      const totalPts = Math.round(goalPlan.reduce((a, b) => a + b.units * b.pv, 0) * 100) / 100;
-      const text = `Mi lista de compra Amway:\n${lines.join("\n")}\nTotal: ${totalPts} pts`;
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast("Lista copiada para WhatsApp");
-      } catch {
-        showToast("No se pudo copiar automático");
-      }
-    });
-
-    $("btn-goal-clear-plan").addEventListener("click", () => {
-      goalPlan = [];
-      saveGoalPlan();
-      renderPointsGoal();
-    });
-
-    $("btn-goal-schedule").addEventListener("click", () => commitGoalPlanAsPurchase("scheduled"));
-    $("btn-goal-confirm").addEventListener("click", () => commitGoalPlanAsPurchase("confirmed"));
-
-    $("btn-cal-prev").addEventListener("click", () => {
-      calMonth -= 1;
-      if (calMonth < 0) {
-        calMonth = 11;
-        calYear -= 1;
-      }
-      selectedCalDate = "";
-      renderPurchaseCalendar();
-    });
-
-    $("btn-cal-next").addEventListener("click", () => {
-      calMonth += 1;
-      if (calMonth > 11) {
-        calMonth = 0;
-        calYear += 1;
-      }
-      selectedCalDate = "";
-      renderPurchaseCalendar();
-    });
-
-    $("btn-cal-show-month").addEventListener("click", () => {
-      if (selectedCalDate) {
-        selectedCalDate = "";
-      } else {
-        const now = new Date();
-        calYear = now.getFullYear();
-        calMonth = now.getMonth();
-      }
-      renderPurchaseCalendar();
-      const label = $("cal-month-label")?.textContent || "este mes";
-      toast(`Mostrando compras de ${label}`, "success");
-      $("cal-day-purchases")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-
-    $("purchase-calendar").addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-cal-date]");
+    // Lo que se fue listeners
+    gone-list?.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-gone-undo]");
       if (!btn) return;
-      const d = btn.dataset.calDate;
-      selectedCalDate = selectedCalDate === d ? "" : d;
-      if ($("goal-purchase-date")) $("goal-purchase-date").value = d;
-      renderPurchaseCalendar();
+      const idx = sales.findIndex((s) => s.id === btn.dataset.goneUndo);
+      if (idx === -1) return;
+      const sale = sales[idx];
+      if (!confirm(¿Devolver "" ( u.) al inventario?)) return;
+      const prod = inventory.find((p) => p.id === sale.productId);
+      if (prod) {
+        prod.totalUnits = Math.max(0, (Number(prod.totalUnits) || 0) + (Number(sale.units) || 0));
+        saveInventory();
+      }
+      sales.splice(idx, 1);
+      saveSales();
+      renderInventory();
+      showToast("Producto devuelto al inventario");
     });
 
-    $("cal-day-purchases").addEventListener("click", (e) => {
-      const conf = e.target.closest("[data-pur-confirm]");
-      const del = e.target.closest("[data-pur-del]");
-      if (conf) {
-        const pur = purchases.find((p) => p.id === conf.dataset.purConfirm);
-        if (pur) {
-          pur.status = "confirmed";
-          savePurchases();
-          renderPointsGoal();
-          showToast("Compra confirmada");
-        }
-      } else if (del) {
-        const idx = purchases.findIndex((p) => p.id === del.dataset.purDel);
-        if (idx !== -1 && confirm("¿Eliminar esta compra guardada?")) {
-          purchases.splice(idx, 1);
-          savePurchases();
-          renderPointsGoal();
-          showToast("Compra eliminada");
-        }
-      }
+    btn-clear-gone?.addEventListener("click", () => {
+      if (sales.length === 0) return;
+      if (!confirm("¿Limpiar la lista de lo que se fue?")) return;
+      sales = [];
+      saveSales();
+      renderInventory();
+      showToast("Lista limpiada");
     });
   }
 
