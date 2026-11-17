@@ -784,7 +784,11 @@
     <header class="app-header">
       <div class="header-inner">
         <div class="header-brand">
-          <h1 class="header-title">Centro</h1>
+          <button type="button" id="header-avatar-btn" aria-label="Mi perfil" style="width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.45);display:grid;place-items:center;overflow:hidden;padding:0;flex-shrink:0;">
+            <img id="header-avatar-img" class="hidden" alt="" style="width:100%;height:100%;object-fit:cover;" />
+            <span id="header-avatar-empty" style="font-size:1.15rem;">👤</span>
+          </button>
+          <h1 id="header-title" class="header-title">Centro</h1>
         </div>
         <button type="button" id="btn-account" class="header-sync-pill" aria-label="Cuenta de Google">
           <span id="sync-dot">☁️</span>
@@ -841,7 +845,7 @@
   </div>
 
   <!-- PAGE: AGREGAR / EDITAR PRODUCTO -->
-  <div id="page-product-form" class="page-overlay hidden">
+  <div id="page-product-form" class="page-overlay hidden" style="z-index:260;">
     <div class="page-header">
       <div class="page-header-inner">
         <button type="button" class="back-btn" data-close-page="page-product-form" aria-label="Volver">‹</button>
@@ -944,7 +948,7 @@
   </div>
 
   <!-- PAGE: VENDER -->
-  <div id="page-sell" class="page-overlay hidden">
+  <div id="page-sell" class="page-overlay hidden" style="z-index:250;">
     <div class="page-header">
       <div class="page-header-inner">
         <button type="button" class="back-btn" data-close-page="page-sell" aria-label="Volver">‹</button>
@@ -1086,13 +1090,30 @@
     </div>
     <div class="page-body">
       <div class="sheet-card">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-          <div style="width:52px;height:52px;border-radius:999px;background:var(--primary-soft);display:grid;place-items:center;font-size:1.5rem;">☁️</div>
-          <div>
-            <strong id="acc-name" style="display:block;font-size:1.1rem;">Conectada con Google</strong>
-            <span id="acc-status" style="font-size:0.9rem;color:var(--text-muted);">Tus datos se guardan en tu Google Drive</span>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div style="width:74px;height:74px;border-radius:999px;background:var(--primary-soft);border:2px solid var(--border);display:grid;place-items:center;overflow:hidden;flex-shrink:0;">
+            <img id="acc-photo-preview" class="hidden" alt="" style="width:100%;height:100%;object-fit:cover;" />
+            <span id="acc-photo-empty" style="font-size:2rem;">👤</span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <label for="acc-camera-input" class="btn-secondary" style="cursor:pointer;min-height:40px;font-size:0.9rem;">📷 Tomar foto de perfil</label>
+            <label for="acc-photo-input" class="btn-secondary" style="cursor:pointer;min-height:40px;font-size:0.9rem;">🖼️ Elegir foto</label>
+            <input type="file" id="acc-camera-input" accept="image/*" capture="user" hidden />
+            <input type="file" id="acc-photo-input" accept="image/*" hidden />
+            <button type="button" id="acc-photo-clear" class="hidden" style="color:var(--danger);font-size:0.84rem;font-weight:700;text-align:left;padding:2px 0;">Quitar foto</button>
           </div>
         </div>
+
+        <div class="form-group">
+          <label class="form-label" for="acc-name-input">Tu nombre (opcional)</label>
+          <input type="text" id="acc-name-input" class="input-field" placeholder="Ej. María" />
+        </div>
+
+        <div style="padding:12px;border-radius:14px;background:var(--surface-alt);margin-bottom:16px;">
+          <strong id="acc-name" style="display:block;font-size:1rem;">☁️ Conectada con Google</strong>
+          <span id="acc-status" style="font-size:0.88rem;color:var(--text-muted);">Tus datos se guardan en tu Google Drive</span>
+        </div>
+
         <button type="button" id="btn-sync-now" class="btn-primary" style="margin-bottom:10px;">🔄 Sincronizar ahora</button>
         <button type="button" id="btn-logout" class="btn-danger" style="width:100%;">Cerrar sesión</button>
       </div>
@@ -2342,6 +2363,7 @@
       await ensureCloudFile();
       if (isInitial) {
         await pullStateFromDrive();
+        if (window._renderCentroProfile) window._renderCentroProfile();
         renderInventory();
         renderSalesHistory();
       }
@@ -2446,14 +2468,11 @@
     $("pf-mode-unit").addEventListener("click", () => setProductFormMode("unit"));
     $("pf-mode-box").addEventListener("click", () => setProductFormMode("box"));
 
-    const handlePhotoSelected = (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+    const compressImageFile = (file, maxSide, onDone) => {
       const reader = new FileReader();
       reader.onload = () => {
         const img = new Image();
         img.onload = () => {
-          const maxSide = 560;
           let w = img.width;
           let h = img.height;
           if (w > maxSide || h > maxSide) {
@@ -2472,12 +2491,17 @@
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, w, h);
           ctx.drawImage(img, 0, 0, w, h);
-          setFormPhoto(canvas.toDataURL("image/jpeg", 0.78));
+          onDone(canvas.toDataURL("image/jpeg", 0.78));
         };
-        img.onerror = () => setFormPhoto(reader.result);
+        img.onerror = () => onDone(reader.result);
         img.src = reader.result;
       };
       reader.readAsDataURL(file);
+    };
+
+    const handlePhotoSelected = (e) => {
+      const file = e.target.files?.[0];
+      if (file) compressImageFile(file, 560, setFormPhoto);
     };
 
     $("pf-camera-input").addEventListener("change", handlePhotoSelected);
@@ -2733,8 +2757,67 @@
       showToast("Venta actualizada");
     });
 
-    // Account page
-    $("btn-account").addEventListener("click", () => openPage("page-account"));
+    // Account & Profile page
+    const renderUserProfile = () => {
+      const name = (state.user?.name || "").trim();
+      const photo = state.user?.photo || "";
+      $("header-title").textContent = name ? `Centro de ${name}` : "Centro";
+
+      if (photo) {
+        $("header-avatar-img").src = photo;
+        $("header-avatar-img").classList.remove("hidden");
+        $("header-avatar-empty").classList.add("hidden");
+        $("acc-photo-preview").src = photo;
+        $("acc-photo-preview").classList.remove("hidden");
+        $("acc-photo-empty").classList.add("hidden");
+        $("acc-photo-clear").classList.remove("hidden");
+      } else {
+        $("header-avatar-img").classList.add("hidden");
+        $("header-avatar-empty").classList.remove("hidden");
+        $("acc-photo-preview").classList.add("hidden");
+        $("acc-photo-empty").classList.remove("hidden");
+        $("acc-photo-clear").classList.add("hidden");
+      }
+      if (document.activeElement !== $("acc-name-input")) {
+        $("acc-name-input").value = name;
+      }
+    };
+    window._renderCentroProfile = renderUserProfile;
+
+    $("header-avatar-btn").addEventListener("click", () => {
+      renderUserProfile();
+      openPage("page-account");
+    });
+    $("btn-account").addEventListener("click", () => {
+      renderUserProfile();
+      openPage("page-account");
+    });
+
+    const handleProfilePhoto = (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      compressImageFile(file, 320, (dataUrl) => {
+        state.user = { ...(state.user || {}), photo: dataUrl };
+        saveLocal();
+        renderUserProfile();
+        showToast("Foto de perfil guardada");
+      });
+    };
+    $("acc-camera-input").addEventListener("change", handleProfilePhoto);
+    $("acc-photo-input").addEventListener("change", handleProfilePhoto);
+    $("acc-photo-clear").addEventListener("click", () => {
+      $("acc-camera-input").value = "";
+      $("acc-photo-input").value = "";
+      state.user = { ...(state.user || {}), photo: "" };
+      saveLocal();
+      renderUserProfile();
+    });
+    $("acc-name-input").addEventListener("input", () => {
+      state.user = { ...(state.user || {}), name: $("acc-name-input").value };
+      saveLocal();
+      renderUserProfile();
+    });
+
     $("btn-sync-now").addEventListener("click", () => {
       if (googleAccessToken) syncWithGoogle(false);
       else startGoogleSignIn();
@@ -2751,6 +2834,7 @@
   // --- INIT ---
   loadLocal();
   bindEvents();
+  if (window._renderCentroProfile) window._renderCentroProfile();
   renderInventory();
   renderSalesHistory();
 
