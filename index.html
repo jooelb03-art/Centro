@@ -281,18 +281,19 @@
       width: 80px;
       height: 80px;
       border-radius: 14px;
-      background: #ffffff;
+      background: #f5efe4;
       border: 1px solid var(--border);
       flex-shrink: 0;
       display: grid;
       place-items: center;
       overflow: hidden;
-      padding: 4px;
+      padding: 0;
     }
     .inv-photo img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      display: block;
     }
     .inv-info {
       flex: 1;
@@ -626,21 +627,22 @@
 
     /* Product Detail View */
     .detail-hero-photo {
-      width: 140px;
-      height: 140px;
+      width: 150px;
+      height: 150px;
       margin: 0 auto 14px;
       border-radius: 22px;
       background: #f5efe4;
       border: 1.5px solid var(--border);
       display: grid;
       place-items: center;
-      padding: 10px;
+      padding: 0;
       overflow: hidden;
     }
     .detail-hero-photo img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      display: block;
     }
     .detail-pill {
       display: inline-flex;
@@ -922,10 +924,10 @@
           </label>
           <input type="file" id="pd-camera-input" accept="image/*" capture="environment" hidden />
         </div>
-        <label for="pd-camera-input" class="detail-hero-photo" style="cursor:pointer;">
+        <button type="button" id="pd-photo-zoom-btn" class="detail-hero-photo" style="cursor:pointer;" aria-label="Ver foto en grande">
           <img id="pd-photo" class="hidden" alt="" />
           <span id="pd-photo-empty" style="font-size:3rem;">📦</span>
-        </label>
+        </button>
         <h2 id="pd-name" style="margin:0 0 6px;font-size:1.5rem;"></h2>
         <p id="pd-desc" style="margin:0;color:var(--text-muted);font-size:0.96rem;"></p>
 
@@ -1124,6 +1126,12 @@
         <button type="button" id="btn-logout" class="btn-danger" style="width:100%;">Cerrar sesión</button>
       </div>
     </div>
+  </div>
+
+  <!-- LIGHTBOX: VER FOTO EN GRANDE -->
+  <div id="photo-lightbox" class="hidden" style="position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+    <button type="button" id="lightbox-close" style="position:absolute;top:calc(16px + env(safe-area-inset-top, 0px));right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,0.2);color:#fff;font-size:1.3rem;font-weight:700;display:grid;place-items:center;">✕</button>
+    <img id="lightbox-img" src="" alt="" style="max-width:94vw;max-height:82vh;object-fit:contain;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,0.5);" />
   </div>
 
   <div id="toast" class="toast hidden"></div>
@@ -2584,6 +2592,20 @@
     });
 
     // Product Detail
+    $("pd-photo-zoom-btn").addEventListener("click", () => {
+      const p = state.inventory.find((x) => x.id === currentProductId);
+      const photo = p ? resolveCatalogPhoto(p.name, p.photo) : "";
+      if (photo) {
+        $("lightbox-img").src = photo;
+        $("photo-lightbox").classList.remove("hidden");
+      } else {
+        $("pd-camera-input").click();
+      }
+    });
+    $("photo-lightbox").addEventListener("click", () => {
+      $("photo-lightbox").classList.add("hidden");
+      $("lightbox-img").src = "";
+    });
     $("pd-camera-input").addEventListener("change", (e) => {
       const file = e.target.files?.[0];
       const p = state.inventory.find((x) => x.id === currentProductId);
