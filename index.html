@@ -789,9 +789,9 @@
           </button>
           <h1 id="header-title" class="header-title">Centro</h1>
         </div>
-        <button type="button" id="btn-account" class="header-sync-pill" aria-label="Cuenta de Google">
-          <span id="sync-dot">☁️</span>
-          <span id="sync-label">Google</span>
+        <button type="button" id="btn-account" class="header-sync-pill" aria-label="Configuración">
+          <span id="sync-dot">⚙️</span>
+          <span id="sync-label">Configuración</span>
         </button>
       </div>
     </header>
@@ -1090,7 +1090,7 @@
     <div class="page-header">
       <div class="page-header-inner">
         <button type="button" class="back-btn" data-close-page="page-account" aria-label="Volver">‹</button>
-        <h2 class="page-title">Cuenta de Google</h2>
+        <h2 class="page-title">Configuración</h2>
       </div>
     </div>
     <div class="page-body">
@@ -2257,7 +2257,6 @@
 
   // --- GOOGLE DRIVE CLOUD SYNC ---
   function updateSyncUI(text) {
-    $("sync-label").textContent = text;
     if ($("acc-status")) $("acc-status").textContent = text;
   }
 
