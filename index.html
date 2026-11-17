@@ -859,12 +859,14 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Foto</label>
+          <label class="form-label">Foto (opcional)</label>
           <div class="photo-box">
             <img id="pf-photo-preview" class="photo-preview-lg hidden" alt="" />
-            <div id="pf-photo-placeholder" style="width:78px;height:78px;border-radius:14px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;font-size:1.8rem;flex-shrink:0;">📷</div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-              <label for="pf-photo-input" class="btn-secondary" style="cursor:pointer;min-height:42px;font-size:0.94rem;">+ Añadir foto</label>
+            <div id="pf-photo-placeholder" style="width:78px;height:78px;border-radius:14px;background:#fff;border:1px solid var(--border);display:grid;place-items:center;font-size:1.8rem;flex-shrink:0;">📦</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+              <label for="pf-camera-input" class="btn-secondary" style="cursor:pointer;min-height:42px;font-size:0.94rem;">📷 Tomar foto</label>
+              <label for="pf-photo-input" class="btn-secondary" style="cursor:pointer;min-height:42px;font-size:0.94rem;">🖼️ Elegir foto</label>
+              <input type="file" id="pf-camera-input" accept="image/*" capture="environment" hidden />
               <input type="file" id="pf-photo-input" accept="image/*" hidden />
               <button type="button" id="pf-photo-clear" class="hidden" style="color:var(--danger);font-size:0.86rem;font-weight:700;text-align:left;padding:2px 0;">Quitar foto</button>
             </div>
@@ -2444,14 +2446,44 @@
     $("pf-mode-unit").addEventListener("click", () => setProductFormMode("unit"));
     $("pf-mode-box").addEventListener("click", () => setProductFormMode("box"));
 
-    $("pf-photo-input").addEventListener("change", (e) => {
+    const handlePhotoSelected = (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = () => setFormPhoto(reader.result);
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxSide = 560;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxSide || h > maxSide) {
+            if (w >= h) {
+              h = Math.round((h * maxSide) / w);
+              w = maxSide;
+            } else {
+              w = Math.round((w * maxSide) / h);
+              h = maxSide;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          setFormPhoto(canvas.toDataURL("image/jpeg", 0.78));
+        };
+        img.onerror = () => setFormPhoto(reader.result);
+        img.src = reader.result;
+      };
       reader.readAsDataURL(file);
-    });
+    };
+
+    $("pf-camera-input").addEventListener("change", handlePhotoSelected);
+    $("pf-photo-input").addEventListener("change", handlePhotoSelected);
     $("pf-photo-clear").addEventListener("click", () => {
+      $("pf-camera-input").value = "";
       $("pf-photo-input").value = "";
       setFormPhoto("");
     });
