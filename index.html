@@ -942,11 +942,12 @@
           <button type="button" id="pd-plus" class="stepper-btn" aria-label="Sumar 1">+</button>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
           <button type="button" id="pd-edit" class="btn-secondary">✏️ Editar</button>
           <button type="button" id="pd-delete" class="btn-danger">🗑️ Eliminar</button>
         </div>
 
+        <button type="button" id="pd-save" class="btn-secondary" style="width:100%;margin-bottom:10px;border-color:var(--primary-btn);color:var(--primary-dark);">✅ Guardar</button>
         <button type="button" id="pd-sell" class="btn-primary">Vender</button>
       </div>
     </div>
@@ -2625,6 +2626,12 @@
       renderInventory();
       closePage("page-product-detail");
       showToast("Producto borrado");
+    });
+    $("pd-save").addEventListener("click", () => {
+      saveLocal();
+      renderInventory();
+      closePage("page-product-detail");
+      showToast("Producto guardado");
     });
     $("pd-sell").addEventListener("click", () => {
       if (currentProductId) openSellPage(currentProductId);
