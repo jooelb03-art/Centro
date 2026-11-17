@@ -744,6 +744,165 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.22);
       max-width: 90vw;
       text-align: center;
+      animation: centroToastIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Unified Smooth Animations */
+    :root {
+      --centro-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --centro-speed: 240ms;
+    }
+
+    button,
+    label.btn-secondary,
+    .inv-card,
+    .sale-card,
+    .suggestion-item,
+    .mode-btn,
+    .stepper-btn,
+    .back-btn,
+    .fab-btn {
+      transition: transform 150ms var(--centro-ease), background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
+    }
+
+    button:active,
+    label.btn-secondary:active,
+    .inv-card:active,
+    .sale-card:active,
+    .suggestion-item:active,
+    .mode-btn:active,
+    .stepper-btn:active,
+    .back-btn:active,
+    .fab-btn:active {
+      transform: scale(0.965);
+    }
+
+    @keyframes centroViewIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tab-animate-in {
+      animation: centroViewIn var(--centro-speed) var(--centro-ease) both;
+    }
+
+    @keyframes centroPageIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes centroPageOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(18px); }
+    }
+    .page-overlay {
+      animation: centroPageIn var(--centro-speed) var(--centro-ease) both;
+    }
+    .page-overlay.is-closing {
+      animation: centroPageOut 200ms var(--centro-ease) both;
+      pointer-events: none;
+    }
+
+    @keyframes centroItemIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .inv-card, .sale-card {
+      animation: centroItemIn var(--centro-speed) var(--centro-ease) both;
+    }
+    .is-removing {
+      opacity: 0 !important;
+      transform: scale(0.94) !important;
+      transition: opacity 200ms var(--centro-ease), transform 200ms var(--centro-ease) !important;
+    }
+
+    @keyframes centroToastIn {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* Confirm Modal (Centro Style) */
+    @keyframes centroBackdropIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes centroBackdropOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    @keyframes centroPopIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes centroPopOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.92); }
+    }
+
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9900;
+      background: rgba(28, 36, 32, 0.48);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: centroBackdropIn var(--centro-speed) var(--centro-ease) both;
+    }
+    .confirm-overlay.is-closing {
+      animation: centroBackdropOut 200ms var(--centro-ease) both;
+      pointer-events: none;
+    }
+    .confirm-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      text-align: center;
+      animation: centroPopIn var(--centro-speed) var(--centro-ease) both;
+    }
+    .confirm-overlay.is-closing .confirm-card {
+      animation: centroPopOut 200ms var(--centro-ease) both;
+    }
+    .confirm-question {
+      margin: 0 0 20px;
+      font-size: 1.18rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .confirm-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .confirm-btn-yes {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 14px;
+      background: var(--danger);
+      color: #ffffff;
+      font-size: 1.04rem;
+      font-weight: 800;
+    }
+    .confirm-btn-cancel {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 14px;
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    #photo-lightbox {
+      animation: centroBackdropIn var(--centro-speed) var(--centro-ease) both;
+    }
+    #photo-lightbox img {
+      animation: centroPopIn var(--centro-speed) var(--centro-ease) both;
     }
   </style>
 </head>
@@ -1132,6 +1291,17 @@
   <div id="photo-lightbox" class="hidden" style="position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
     <button type="button" id="lightbox-close" style="position:absolute;top:calc(16px + env(safe-area-inset-top, 0px));right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,0.2);color:#fff;font-size:1.3rem;font-weight:700;display:grid;place-items:center;">✕</button>
     <img id="lightbox-img" src="" alt="" style="max-width:94vw;max-height:82vh;object-fit:contain;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,0.5);" />
+  </div>
+
+  <!-- CONFIRM MODAL (Centro Style) -->
+  <div id="confirm-modal" class="confirm-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-question">
+    <div class="confirm-card">
+      <p id="confirm-question" class="confirm-question"></p>
+      <div class="confirm-actions">
+        <button type="button" id="confirm-yes" class="confirm-btn-yes">Sí</button>
+        <button type="button" id="confirm-cancel" class="confirm-btn-cancel">Cancelar</button>
+      </div>
+    </div>
   </div>
 
   <div id="toast" class="toast hidden"></div>
@@ -1953,14 +2123,55 @@
 
   // --- PAGE HELPERS ---
   function openPage(id) {
-    $(id).classList.remove("hidden");
+    const el = $(id);
+    el.classList.remove("is-closing");
+    el.classList.remove("hidden");
     document.body.style.overflow = "hidden";
   }
 
   function closePage(id) {
-    $(id).classList.add("hidden");
-    const anyOpen = document.querySelector(".page-overlay:not(.hidden)");
-    if (!anyOpen) document.body.style.overflow = "";
+    const el = $(id);
+    if (el.classList.contains("hidden") || el.classList.contains("is-closing")) return;
+    el.classList.add("is-closing");
+    setTimeout(() => {
+      el.classList.remove("is-closing");
+      el.classList.add("hidden");
+      const anyOpen = document.querySelector(".page-overlay:not(.hidden)");
+      if (!anyOpen) document.body.style.overflow = "";
+    }, 200);
+  }
+
+  function askConfirm(question, yesLabel = "Sí, borrar") {
+    return new Promise((resolve) => {
+      const modal = $("confirm-modal");
+      const qEl = $("confirm-question");
+      const yesBtn = $("confirm-yes");
+      const cancelBtn = $("confirm-cancel");
+      qEl.textContent = question;
+      yesBtn.textContent = yesLabel;
+      modal.classList.remove("is-closing");
+      modal.classList.remove("hidden");
+
+      const finish = (ans) => {
+        yesBtn.removeEventListener("click", onYes);
+        cancelBtn.removeEventListener("click", onCancel);
+        modal.removeEventListener("click", onBackdrop);
+        modal.classList.add("is-closing");
+        setTimeout(() => {
+          modal.classList.remove("is-closing");
+          modal.classList.add("hidden");
+          resolve(ans);
+        }, 200);
+      };
+      const onYes = () => finish(true);
+      const onCancel = () => finish(false);
+      const onBackdrop = (e) => {
+        if (e.target === modal) finish(false);
+      };
+      yesBtn.addEventListener("click", onYes);
+      cancelBtn.addEventListener("click", onCancel);
+      modal.addEventListener("click", onBackdrop);
+    });
   }
 
   // --- PRODUCT FORM (ADD / EDIT) ---
@@ -2455,10 +2666,17 @@
 
     document.querySelectorAll(".tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (activeTab === btn.dataset.tab) return;
         activeTab = btn.dataset.tab;
         document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b === btn));
-        $("tab-inventario").classList.toggle("hidden", activeTab !== "inventario");
-        $("tab-historial").classList.toggle("hidden", activeTab !== "historial");
+        const invTab = $("tab-inventario");
+        const hisTab = $("tab-historial");
+        invTab.classList.toggle("hidden", activeTab !== "inventario");
+        hisTab.classList.toggle("hidden", activeTab !== "historial");
+        const shown = activeTab === "inventario" ? invTab : hisTab;
+        shown.classList.remove("tab-animate-in");
+        void shown.offsetWidth;
+        shown.classList.add("tab-animate-in");
         $("fab-bar").classList.toggle("hidden", activeTab !== "inventario");
         if (activeTab === "historial") renderSalesHistory();
       });
@@ -2639,14 +2857,17 @@
       const p = state.inventory.find((x) => x.id === currentProductId);
       if (p) openProductForm(p);
     });
-    $("pd-delete").addEventListener("click", () => {
+    $("pd-delete").addEventListener("click", async () => {
       const idx = state.inventory.findIndex((x) => x.id === currentProductId);
       if (idx === -1) return;
-      if (!confirm(`¿Borrar "${state.inventory[idx].name}" del inventario?`)) return;
+      const ok = await askConfirm(`¿Borrar "${state.inventory[idx].name}" del inventario?`, "Sí, borrar");
+      if (!ok) return;
+      const card = document.querySelector(`.inv-card[data-prod-id="${state.inventory[idx].id}"]`);
+      if (card) card.classList.add("is-removing");
       state.inventory.splice(idx, 1);
       saveLocal();
-      renderInventory();
       closePage("page-product-detail");
+      setTimeout(() => renderInventory(), 180);
       showToast("Producto borrado");
     });
     $("pd-save").addEventListener("click", () => {
@@ -2729,22 +2950,27 @@
       if (s?.buyerPhone) openWhatsApp(s.buyerPhone);
     });
 
-    $("sd-delete").addEventListener("click", () => {
+    $("sd-delete").addEventListener("click", async () => {
       const idx = state.sales.findIndex((x) => x.id === currentSaleId);
       if (idx === -1) return;
+      const ok = await askConfirm("¿Borrar esta venta y devolver las unidades al inventario?", "Sí, borrar");
+      if (!ok) return;
       const s = state.sales[idx];
-      if (!confirm("¿Borrar esta venta y devolver las unidades al inventario?")) return;
       const p = state.inventory.find((x) => x.id === s.productId);
       if (p) {
         const upb = Math.max(1, parseInt(p.unitsPerBox, 10) || 1);
         const returnUnits = Number(s.unitsSold) || (s.mode === "box" ? Number(s.qty) * upb : Number(s.qty));
         p.totalUnits = (parseInt(p.totalUnits, 10) || 0) + returnUnits;
       }
+      const card = document.querySelector(`.sale-card[data-sale-id="${s.id}"]`);
+      if (card) card.classList.add("is-removing");
       state.sales.splice(idx, 1);
       saveLocal();
-      renderInventory();
-      renderSalesHistory();
       closePage("page-sale-detail");
+      setTimeout(() => {
+        renderInventory();
+        renderSalesHistory();
+      }, 180);
       showToast("Venta borrada y unidades devueltas");
     });
 
@@ -2868,8 +3094,9 @@
       if (googleAccessToken) syncWithGoogle(false);
       else startGoogleSignIn();
     });
-    $("btn-logout").addEventListener("click", () => {
-      if (!confirm("¿Cerrar sesión de Google en este teléfono?")) return;
+    $("btn-logout").addEventListener("click", async () => {
+      const ok = await askConfirm("¿Cerrar sesión de Google en este teléfono?", "Sí, cerrar sesión");
+      if (!ok) return;
       googleAccessToken = null;
       localStorage.removeItem(STORAGE_AUTH);
       closePage("page-account");
