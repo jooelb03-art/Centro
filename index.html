@@ -917,10 +917,16 @@
     </div>
     <div class="page-body">
       <div class="sheet-card" style="text-align:center;">
-        <div class="detail-hero-photo">
+        <div style="margin-bottom:10px;">
+          <label for="pd-camera-input" class="btn-secondary" style="display:inline-flex;cursor:pointer;min-height:40px;padding:6px 14px;font-size:0.92rem;border-radius:999px;">
+            📷 Tomar foto del producto
+          </label>
+          <input type="file" id="pd-camera-input" accept="image/*" capture="environment" hidden />
+        </div>
+        <label for="pd-camera-input" class="detail-hero-photo" style="cursor:pointer;">
           <img id="pd-photo" class="hidden" alt="" />
           <span id="pd-photo-empty" style="font-size:3rem;">📦</span>
-        </div>
+        </label>
         <h2 id="pd-name" style="margin:0 0 6px;font-size:1.5rem;"></h2>
         <p id="pd-desc" style="margin:0;color:var(--text-muted);font-size:0.96rem;"></p>
 
@@ -2579,6 +2585,19 @@
     });
 
     // Product Detail
+    $("pd-camera-input").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      const p = state.inventory.find((x) => x.id === currentProductId);
+      if (!file || !p) return;
+      compressImageFile(file, 560, (dataUrl) => {
+        p.photo = dataUrl;
+        saveLocal();
+        renderInventory();
+        openProductDetail(p.id);
+        showToast("Foto guardada");
+      });
+      e.target.value = "";
+    });
     $("pd-minus").addEventListener("click", () => {
       const p = state.inventory.find((x) => x.id === currentProductId);
       if (!p) return;
