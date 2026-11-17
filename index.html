@@ -2630,6 +2630,9 @@
           return;
         }
         googleAccessToken = resp.access_token;
+        const expMs = Date.now() + (Number(resp.expires_in) || 3500) * 1000;
+        localStorage.setItem("centro_v2_gtoken", googleAccessToken);
+        localStorage.setItem("centro_v2_gtoken_exp", String(expMs));
         localStorage.setItem(STORAGE_AUTH, "active");
         $("welcome-screen").classList.add("hidden");
         await syncWithGoogle(true);
@@ -2640,6 +2643,14 @@
   }
 
   function trySilentReconnect() {
+    const cachedToken = localStorage.getItem("centro_v2_gtoken");
+    const cachedExp = Number(localStorage.getItem("centro_v2_gtoken_exp") || "0");
+    if (cachedToken && Date.now() < cachedExp - 60000) {
+      googleAccessToken = cachedToken;
+      syncWithGoogle(true);
+      return;
+    }
+
     let tries = 0;
     const timer = setInterval(() => {
       tries++;
@@ -2652,6 +2663,9 @@
             callback: (resp) => {
               if (!resp.error && resp.access_token) {
                 googleAccessToken = resp.access_token;
+                const expMs = Date.now() + (Number(resp.expires_in) || 3500) * 1000;
+                localStorage.setItem("centro_v2_gtoken", googleAccessToken);
+                localStorage.setItem("centro_v2_gtoken_exp", String(expMs));
                 syncWithGoogle(true);
               }
             }
@@ -3102,6 +3116,8 @@
       const ok = await askConfirm("¿Cerrar sesión de Google en este teléfono?", "Sí, cerrar sesión");
       if (!ok) return;
       googleAccessToken = null;
+      localStorage.removeItem("centro_v2_gtoken");
+      localStorage.removeItem("centro_v2_gtoken_exp");
       localStorage.removeItem(STORAGE_AUTH);
       closePage("page-account");
       $("welcome-screen").classList.remove("hidden");
@@ -3121,7 +3137,14 @@
     setTimeout(() => splash.classList.add("hidden"), 450);
   }, 1600);
 
-  if (localStorage.getItem(STORAGE_AUTH) === "active") {
+  const hasSavedSession =
+    localStorage.getItem(STORAGE_AUTH) === "active" ||
+    state.inventory.length > 0 ||
+    state.sales.length > 0 ||
+    Boolean((state.user?.name || "").trim() || state.user?.photo);
+
+  if (hasSavedSession) {
+    localStorage.setItem(STORAGE_AUTH, "active");
     $("welcome-screen").classList.add("hidden");
     trySilentReconnect();
   } else {
